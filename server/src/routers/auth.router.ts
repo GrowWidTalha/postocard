@@ -3,11 +3,19 @@ import { Hono } from "hono";
 import { z } from "zod";
 import { db } from "../lib/db";
 import { UserRole } from "@prisma/client";
-import { sendVerificationEmail } from "../lib/mail";
-import { generateVerificationToken } from "../lib/tokens";
+import { sendTwoFactorEmail, sendVerificationEmail } from "../lib/mail";
+import {
+  generateTwoFactorToken,
+  generateVerificationToken,
+} from "../lib/tokens";
 import { getUserByEmail, getUserById } from "../lib/data/user";
 import * as bcrypt from "bcryptjs";
 import { getVerificationTokenByToken } from "../lib/data/verification-token";
+import {
+  getTwoFactorTokenByEmail,
+  getTwoFactorTokenByToken,
+} from "@/lib/data/two-factor-token";
+import { getTwoFactorConfirmationByUserId } from "@/lib/data/two-factor-confirmation";
 
 const authRouter = new Hono()
   .get(
@@ -74,7 +82,9 @@ const authRouter = new Hono()
         name: z.string(),
         email: z.string(),
         role: z.nativeEnum(UserRole),
-        password: z.string().min(8, "Password must be at least 8 characters long"),
+        password: z
+          .string()
+          .min(8, "Password must be at least 8 characters long"),
       })
     ),
     async (c) => {
@@ -100,7 +110,10 @@ const authRouter = new Hono()
         });
 
         const verificationToken = await generateVerificationToken(email);
-        await sendVerificationEmail(verificationToken.email, verificationToken.token);
+        await sendVerificationEmail(
+          verificationToken.email,
+          verificationToken.token
+        );
 
         return c.json({
           status: "success",
@@ -122,7 +135,10 @@ const authRouter = new Hono()
         const { email } = c.req.valid("param");
         const verificationToken = await generateVerificationToken(email);
 
-        await sendVerificationEmail(verificationToken.email, verificationToken.token);
+        await sendVerificationEmail(
+          verificationToken.email,
+          verificationToken.token
+        );
 
         return c.json({
           status: "success",
@@ -130,7 +146,11 @@ const authRouter = new Hono()
         });
       } catch (error) {
         return c.json(
-          { status: "error", message: "Failed to generate verification token", error },
+          {
+            status: "error",
+            message: "Failed to generate verification token",
+            error,
+          },
           500
         );
       }
@@ -146,7 +166,11 @@ const authRouter = new Hono()
 
         if (!existingToken) {
           return c.json(
-            { status: "error", message: "Invalid or expired token", data: null },
+            {
+              status: "error",
+              message: "Invalid or expired token",
+              data: null,
+            },
             400
           );
         }
@@ -162,7 +186,11 @@ const authRouter = new Hono()
         const existingUser = await getUserByEmail(existingToken.email);
         if (!existingUser) {
           return c.json(
-            { status: "error", message: "No user found for this email", data: null },
+            {
+              status: "error",
+              message: "No user found for this email",
+              data: null,
+            },
             404
           );
         }
@@ -187,6 +215,126 @@ const authRouter = new Hono()
         );
       }
     }
-  );
+  )
+  .post(
+    "/generateTwoFactorToken",
+    zValidator("param", z.object({ email: z.string() })),
+    async (c) => {
+      try {
+        const { email } = c.req.valid("param");
+        const existingUser = await getUserByEmail(email);
+        if (!existingUser) {
+          return c.json({
+            status: "error",
+            message: "Email not found",
+          });
+        }
+
+        const token = await generateTwoFactorToken(email);
+        await sendTwoFactorEmail(token.token, token.email);
+
+        return c.json({
+          status: "success",
+          message: "Two factor token sent successfully",
+        });
+      } catch (error) {
+        return c.json(
+          {
+            status: "error",
+            message: "Failed to send two factor token",
+            error,
+          },
+          500
+        );
+      }
+    }
+  )
+  .get(
+    "/validateTwoFactorToken",
+    zValidator(
+      "param",
+      z.object({ token: z.string(), email: z.string().email() })
+    ),
+    async (c) => {
+      try {
+        const { email, token } = c.req.valid("param");
+        const existingUser = await getUserByEmail(email);
+
+        if (!existingUser) {
+          return c.json(
+            {
+              status: "error",
+              message: "No user found for this email",
+              data: null,
+            },
+            404
+          );
+        }
+
+        const existingToken = await getTwoFactorTokenByEmail(existingUser.id);
+
+        if (!existingToken) {
+          return c.json(
+            {
+              status: "error",
+              message: "Invalid or expired token",
+              data: null,
+            },
+            400
+          );
+        }
+
+        if (existingToken.token !== token) {
+          return c.json(
+            {
+              status: "error",
+              message: "Invalid code!",
+              data: null,
+            },
+            400
+          );
+        }
+
+        const hasExpired = new Date(existingToken.expires) < new Date();
+        if (hasExpired) {
+          return c.json(
+            { status: "error", message: "Token has expired", data: null },
+            400
+          );
+        }
+
+        await db.twoFactorToken.delete({ where: { id: existingToken.id } });
+
+        const existingTwoFactorConfirmation =
+          await getTwoFactorConfirmationByUserId(existingUser.id);
+
+        if (existingTwoFactorConfirmation) {
+          await db.twoFactorConfirmation.delete({
+            where: { id: existingTwoFactorConfirmation.id },
+          });
+        }
+
+        await db.twoFactorConfirmation.create({
+          data: {
+            userId: existingUser.id,
+          },
+        });
+
+        return c.json({
+          status: "success",
+          message: "Two factor token validated successfully",
+        });
+      } catch (error) {
+        return c.json(
+          {
+            status: "error",
+            message: "Failed to validate two factor token",
+            error,
+          },
+          500
+        );
+      }
+    }
+  )
 
 export default authRouter;
