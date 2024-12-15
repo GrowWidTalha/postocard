@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "composite": true,
+    "skipLibCheck": true,
+    "lib": ["ESNext"],
+    "jsx": "react-jsx",
+    "jsxImportSource": "hono/jsx"
+  },
+  "include": ["src/**/*"]
+}
