@@ -1,0 +1,23 @@
+import { db } from "../db";
+export const getTwoFactorTokenByToken = async (token) => {
+    try {
+        const existingToken = await db.twoFactorToken.findUnique({
+            where: { token: token },
+        });
+        return existingToken;
+    }
+    catch {
+        return null;
+    }
+};
+export const getTwoFactorTokenByEmail = async (email) => {
+    try {
+        const existingToken = await db.twoFactorToken.findFirst({
+            where: { email },
+        });
+        return existingToken;
+    }
+    catch {
+        return null;
+    }
+};
