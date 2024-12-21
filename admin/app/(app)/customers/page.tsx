@@ -1,15 +1,20 @@
-import { DataTable } from "@/components/data-table";
-import TopHeader from "@/components/data-table/Header";
-import { projects } from "./data";
-import { columns } from "./columns";
+import DashboardPage from "@/components/dashboard-page";
+import React from "react";
+import CustomersPageContent from "./CostumersPageContent";
+import { getUsersByRole } from "@/features/peoples/actions/people";
+import EmptyState from "@/components/empty-state";
 
-const IndexPage = () => {
+const CustomersPage = async () => {
+  const customers = await getUsersByRole("USER");
   return (
-    <div className="flex flex-col gap-10">
-      <TopHeader />
-      <DataTable data={projects} columns={columns} />
-    </div>
+    <DashboardPage title="Customers">
+      {customers && customers?.length < 1 ? (
+        <EmptyState heading="No Customers yet" subHeading="" />
+      ) : (
+        <CustomersPageContent customers={customers} />
+      )}
+    </DashboardPage>
   );
 };
 
-export default IndexPage;
+export default CustomersPage;

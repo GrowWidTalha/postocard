@@ -5,6 +5,8 @@ import {
   PackageOpen,
   Settings,
   BookA,
+  Printer,
+  PaintRoller
 } from "lucide-react"
 import { PinTopIcon } from "@radix-ui/react-icons"
 import Link from "next/link"
@@ -72,10 +74,11 @@ const SIDEBAR_ITEMS: SidebarCategory[] = [
     items: [
       {
         href: "/printing-providers",
-        icon: Settings,
+        icon: Printer,
         text: "Printing providers",
       },
-      { href: "/designs", icon: PinTopIcon, text: "Designers" },
+      { href: "/designers", icon: PaintRoller
+        , text: "Designers" },
     ],
   },
 ]
