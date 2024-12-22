@@ -1,35 +1,38 @@
-"use client"
+"use client";
 
 import {
   QueryCache,
   QueryClient,
   QueryClientProvider,
-} from "@tanstack/react-query"
-import { PropsWithChildren, useState } from "react"
-import { Toaster } from "./ui/sonner"
-import AuthProvider from "../features/auth/components/auth-provider"
+} from "@tanstack/react-query";
+import { PropsWithChildren, useState } from "react";
+import { Toaster } from "./ui/sonner";
+import { ConfirmDialogProvider } from "@omit/react-confirm-dialog";
+
+import AuthProvider from "../features/auth/components/auth-provider";
 
 const queryClient = new QueryClient({
   queryCache: new QueryCache({
     onError: (err) => {
-      let errorMessage: string
+      let errorMessage: string;
       if (err instanceof Error) {
-        errorMessage = err.message
+        errorMessage = err.message;
       } else {
-        errorMessage = "An unknown error occurred."
+        errorMessage = "An unknown error occurred.";
       }
       // toast notify user, log as an example
-      console.log(errorMessage)
+      console.log(errorMessage);
     },
   }),
-})
+});
 
 export const Providers = ({ children }: PropsWithChildren) => {
   return (
     <QueryClientProvider client={queryClient}>
-          {children}
-          <Toaster />
-
+      <ConfirmDialogProvider>
+        {children}
+        <Toaster />
+      </ConfirmDialogProvider>
     </QueryClientProvider>
-  )
-}
+  );
+};

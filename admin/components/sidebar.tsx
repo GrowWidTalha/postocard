@@ -53,7 +53,7 @@ const SIDEBAR_ITEMS: SidebarCategory[] = [
     category: "Blog",
     items: [
       {
-        href: "/dashboard/blogs",
+        href: "/blogs",
         icon: BookA,
         text: "Blog Posts",
       },
