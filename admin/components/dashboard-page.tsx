@@ -27,7 +27,7 @@ const DashboardPage = ({ title, children, hideBackButton, cta }: Props) => {
                 <ArrowLeft className="h-4 w-4" />
               </Button>
             )}
-            <h1 className="text-2xl font-bold">{title}</h1>
+            <h1 className="text-2xl font-bold truncate sm:whitespace-nowrap">{title}</h1>
           </div>
           {cta ? (
             <div className="flex w-full justify-start sm:items-end sm:justify-end">

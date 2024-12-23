@@ -14,7 +14,7 @@ enum UserRole {
     DESIGNER
 }
 
-enum CardStatus {
+enum DesignStatus {
     PENDING
     APPROVED
     DISABLED
@@ -110,20 +110,35 @@ model Design {
     id               String         @id @default(cuid())
     userId           String
     user             User           @relation("UserDesigns", fields: [userId], references: [id])
-    status           CardStatus     @default(PENDING)
+    status           DesignStatus   @default(PENDING)
     name             String
     description      String
+    pdfLink          String
+    thumbnailUrl     String
+    createdBy        String         @default("admin")
+    published        Boolean        @default(false)
     createdAt        DateTime       @default(now())
     updatedAt        DateTime       @updatedAt
     orders           Order[]        @relation("DesignOrders")
     designCategoryId String
     designCategory   DesignCategory @relation(fields: [designCategoryId], references: [id])
+    subCategoryId    String?
+    subCategory      SubCategory?   @relation(fields: [subCategoryId], references: [id])
 }
 
 model DesignCategory {
-    id      String   @id @default(cuid())
-    name    String
-    designs Design[]
+    id            String        @id @default(cuid())
+    name          String
+    designs       Design[]
+    subCategories SubCategory[]
+}
+
+model SubCategory {
+    id               String         @id @default(cuid())
+    name             String
+    designCategoryId String
+    designCategory   DesignCategory @relation(fields: [designCategoryId], references: [id])
+    designs          Design[]
 }
 
 model Order {

@@ -68,6 +68,7 @@ export const createBlog = async ({
         imageUrl,
         slug,
         author,
+        published
       },
     });
 

@@ -10,6 +10,10 @@ export const ourFileRouter = {
       maxFileSize: "4MB",
       maxFileCount: 5,
     },
+    pdf: {
+        maxFileCount: 1,
+        maxFileSize: "1024MB",
+    }
   })
     .onUploadComplete(async ({file }) => {
 

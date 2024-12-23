@@ -33,9 +33,9 @@ const SIDEBAR_ITEMS: SidebarCategory[] = [
     items: [{ href: "/", icon: Home, text: "Dashboard" }],
   },
   {
-    category: "Cards",
+    category: "Products",
     items: [
-      { href: "/dashboard/Cards", icon: PackageOpen, text: "Cards" },
+      { href: "/designs", icon: PackageOpen, text: "Designs" },
     ],
   },
   {
@@ -108,7 +108,7 @@ export const Sidebar = ({ onClose }: { onClose?: () => void }) => {
         ref={function() {}}
       >
         <p className="hidden sm:block text-lg/7 font-semibold text-brand-900">
-          My<span className="text-brand-700"> Store</span>
+            Posto Card
         </p>
       </button>
 
