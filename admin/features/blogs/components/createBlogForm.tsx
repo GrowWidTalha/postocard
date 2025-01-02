@@ -18,7 +18,7 @@ import Editor from "@/components/editor";
 import { Button } from "@/components/ui/button";
 import { UploadDropzone } from "@/lib/uploadthing";
 import { Switch } from "@/components/ui/switch";
-import { QueryClient, useMutation } from "@tanstack/react-query";
+import { QueryClient, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createBlog } from "../actions/blogs.actions";
 import { useRouter } from "next/navigation";
 import { Spinner } from "@/components/spinner";
@@ -34,7 +34,7 @@ const CreateBlogForm = () => {
       published: false,
     },
   });
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
   const router = useRouter();
   const title = form.watch("title");
 

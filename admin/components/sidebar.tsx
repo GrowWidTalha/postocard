@@ -93,27 +93,12 @@ export const Sidebar = ({ onClose }: { onClose?: () => void }) => {
   return (
     <div className="flex flex-col w-full gap-10">
       {/* logo */}
-      <button
-        type="button"
-        id="radix-:Rluult7:"
-        aria-haspopup="menu"
-        aria-expanded={false}
-        aria-controls={undefined}
-        data-state="closed"
-        data-disabled={undefined}
-        disabled={false}
-        className="flex flex-row items-center h-full px-5 rounded-l-..."
-        onPointerDown={function handleEvent() {}}
-        onKeyDown={function handleEvent() {}}
-        ref={function() {}}
-      >
         <p className="hidden sm:block text-lg/7 font-semibold text-brand-900">
             Posto Card
         </p>
-      </button>
 
       {/* navigation items */}
-      <div className="flex-grow">
+      <div className="flex-grow overflow-y-auto">
         <ul>
           {SIDEBAR_ITEMS.map(({ category, items }) => (
             <li key={category} className="mb-4 md:mb-8">

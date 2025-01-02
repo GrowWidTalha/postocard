@@ -17,7 +17,7 @@ import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { QueryClient, useMutation } from "@tanstack/react-query";
+import { QueryClient, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createUserByRole } from "../actions/people";
 import { Spinner } from "@/components/spinner";
 import FormSuccess from "@/features/auth/components/form-success";
@@ -40,7 +40,7 @@ const CreateUserForm = ({
     },
   });
 
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
 
   const { mutate, isPending, isSuccess, error, data } = useMutation({
     mutationFn: async (values: z.infer<typeof createUserFormSchema>) => {

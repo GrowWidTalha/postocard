@@ -10,9 +10,6 @@ import { auth } from "./auth"
 
 const redirectRoutes = [
   "/auth/register",
-  "/auth/reset",
-  "/auth/error",
-  "/auth/new-password",
 ]
 
 export default auth((req) => {

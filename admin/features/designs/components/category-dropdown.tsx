@@ -1,4 +1,4 @@
-import { DesignCategory } from '@prisma/client'
+import { DesignCategory, DesignType } from '@prisma/client'
 import React, { useState } from 'react'
 import { Check, ChevronsUpDown, Plus } from "lucide-react"
 
@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/popover"
 import CreateCategoryDialog from './createCategoryDialog'
 
-const CategoryDropDown = ({ value, onChange, categories }: { value: string, onChange: (text: string) => void, categories: DesignCategory[] }) => {
+const CategoryDropDown = ({ value, onChange, categories, type }: { value: string, onChange: (text: string) => void, categories: DesignCategory[], type: DesignType }) => {
     const [open, setOpen] = useState(false)
     return (
         <Popover open={open} onOpenChange={setOpen}>
@@ -53,7 +53,7 @@ const CategoryDropDown = ({ value, onChange, categories }: { value: string, onCh
                                     {category.name}
                                 </CommandItem>
                             ))}
-                            <CreateCategoryDialog>
+                            <CreateCategoryDialog type={type}>
                                 <div className='flex items-center gap-2 mx-auto w-full justify-center text-xs'>
                                     <Plus />
                                     Add new category

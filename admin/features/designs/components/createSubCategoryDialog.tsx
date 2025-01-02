@@ -2,11 +2,11 @@ import { Dialog, DialogContent, DialogFooter, DialogTitle } from '@/components/u
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { DialogTrigger } from '@radix-ui/react-dialog'
-import { QueryClient, useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { createCategory, createSubCategory } from '../actions/categories.actions'
+import { createSubCategory } from '../actions/categories.actions'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/spinner'
@@ -16,13 +16,12 @@ const categorySchema = z.object({
 })
 
 const CreateSubCategoryDialog = ({ children, categoryId }: { children: React.ReactNode, categoryId: string }) => {
-
     const [open, setOpen] = useState(false)
     const form = useForm<z.infer<typeof categorySchema>>({
         resolver: zodResolver(categorySchema),
         defaultValues: { name: "" }
     })
-    const queryClient = new QueryClient()
+    const queryClient = useQueryClient()
     const { mutate, isPending } = useMutation({
         mutationFn: async (values: z.infer<typeof categorySchema>) => {
             const res = await createSubCategory(values.name, categoryId)
@@ -30,16 +29,17 @@ const CreateSubCategoryDialog = ({ children, categoryId }: { children: React.Rea
             return res
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["sub-categories"] })
+            queryClient.invalidateQueries({ queryKey: ["sub-categories", categoryId] })
         }
     })
 
     const onSubmit = (values: z.infer<typeof categorySchema>) => {
         mutate(values)
     }
+
     return (
-        <Dialog >
-            <DialogTrigger> {children}</DialogTrigger>
+        <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>{children}</DialogTrigger>
             <DialogContent>
                 <DialogTitle>Add Sub Category</DialogTitle>
                 <Form {...form}>
@@ -51,7 +51,7 @@ const CreateSubCategoryDialog = ({ children, categoryId }: { children: React.Rea
                                 <FormItem>
                                     <FormLabel>Sub Category Name</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Birthday of him" {...field} />
+                                        <Input placeholder="Sub Category Name" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>

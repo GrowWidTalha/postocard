@@ -1,35 +1,46 @@
 "use server";
-
 import { db } from "@/db";
 import { currentUser } from "@/features/auth/lib/auth";
+import { DesignType } from "@prisma/client";
+import { z } from "zod";
 
-export const createDesign = async ({
-  name,
-  description,
-  pdfLink,
-  thumbnailUrl,
-  subCategoryId,
-  designCategoryId,
-}: {
-  name: string;
-  description: string;
-  pdfLink: string;
-  thumbnailUrl: string;
-  designCategoryId: string;
-  subCategoryId: string;
-}) => {
+const createDesignSchema = z.object({
+  name: z.string().nonempty(),
+  description: z.string().nonempty(),
+  pdfLink: z.string().url(),
+  thumbnailUrl: z.string().url(),
+  designCategoryId: z.string().nonempty(),
+  subCategoryId: z.string().nonempty(),
+  published: z.boolean(),
+  type: z.nativeEnum(DesignType),
+});
+
+export const createDesign = async (
+  params: z.infer<typeof createDesignSchema>
+) => {
   try {
     const auth = await currentUser();
     if (!auth) return;
+
+    // Validate params using Zod schema
+    const validatedParams = createDesignSchema.safeParse(params);
+    if (!validatedParams.success) return null;
+    console.log({
+      ...validatedParams,
+      user: auth,
+    });
+
     const design = await db.design.create({
       data: {
-        name: name,
-        description: description,
-        pdfLink: pdfLink,
-        thumbnailUrl: thumbnailUrl,
-        userId: auth?.id!,
-        designCategoryId: designCategoryId,
-        subCategoryId: subCategoryId,
+        name: validatedParams.data.name,
+        description: validatedParams.data.description,
+        pdfLink: validatedParams.data.pdfLink,
+        thumbnailUrl: validatedParams.data.thumbnailUrl,
+        designCategoryId: validatedParams.data.designCategoryId,
+        subCategoryId: validatedParams.data.subCategoryId,
+        published: validatedParams.data.published,
+        designType: validatedParams.data.type,
+        userId: auth.id!,
       },
     });
 
@@ -39,7 +50,7 @@ export const createDesign = async ({
       success: true,
     };
   } catch (error: any) {
-    console.log("Error Creating design: ", error);
+    throw Error(error?.message)
     return {
       data: null,
       error: error.message,
@@ -51,7 +62,7 @@ export const createDesign = async ({
 export const getAllDesigns = async () => {
   try {
     const designs = await db.design.findMany();
-
+// console.log(designs)
     return {
       data: designs,
       error: null,

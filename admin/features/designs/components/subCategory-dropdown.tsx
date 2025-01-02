@@ -1,14 +1,11 @@
-import { DesignCategory } from '@prisma/client'
+import { DesignCategory, SubCategory } from '@prisma/client'
 import React, { useState } from 'react'
-import { Check, ChevronsUpDown, Plus } from "lucide-react"
-
-import { cn } from "@/lib/utils"
+import { ChevronsUpDown, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
     Command,
     CommandEmpty,
     CommandGroup,
-    CommandInput,
     CommandItem,
     CommandList,
 } from "@/components/ui/command"
@@ -17,10 +14,9 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
-import CreateCategoryDialog from './createCategoryDialog'
 import CreateSubCategoryDialog from './createSubCategoryDialog'
 
-const SubCategoryDropDown = ({ value, onChange, categories, categoryId }: { value: string, onChange: (text: string) => void, categories: DesignCategory[], categoryId: string }) => {
+const SubCategoryDropDown = ({ value, onChange, categories, categoryId }: { value: string, onChange: (text: string) => void, categories: SubCategory[], categoryId: string }) => {
     const [open, setOpen] = useState(false)
     return (
         <Popover open={open} onOpenChange={setOpen}>
@@ -54,14 +50,14 @@ const SubCategoryDropDown = ({ value, onChange, categories, categoryId }: { valu
                                     {category.name}
                                 </CommandItem>
                             ))}
-                            <CreateSubCategoryDialog categoryId={categoryId}>
-                                <div className='flex items-center gap-2 mx-auto w-full justify-center text-xs'>
-                                    <Plus />
-                                    Add new category
-                                </div>
-                            </CreateSubCategoryDialog>
                         </CommandGroup>
                     </CommandList>
+                    <CreateSubCategoryDialog categoryId={categoryId}>
+                        <div className='flex items-center gap-2 mx-auto w-full justify-center text-xs'>
+                            <Plus />
+                            Add new category
+                        </div>
+                    </CreateSubCategoryDialog>
                 </Command>
             </PopoverContent>
         </Popover>

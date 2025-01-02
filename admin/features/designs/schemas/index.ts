@@ -8,4 +8,6 @@ export const designSchema = z.object({
   category: z.string(),
   subCategory: z.string(),
   published: z.boolean(),
+
+  type: z.enum(["HOLIDAY", "OCCASION"])
 });

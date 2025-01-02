@@ -14,22 +14,21 @@ import { designSchema } from "../schemas";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
-import Editor from "@/components/editor";
 import { Button } from "@/components/ui/button";
 import { UploadDropzone } from "@/lib/uploadthing";
 import { Switch } from "@/components/ui/switch";
-import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { Spinner } from "@/components/spinner";
 import { Textarea } from "@/components/ui/textarea";
-import { Design } from "@prisma/client";
 import CategoryDropDown from "./category-dropdown";
-import { db } from "@/db";
-import { getCategories, getSubCategoriesById } from "../actions/categories.actions";
-import { Skeleton } from "@/components/ui/skeleton";
 import SubCategoryDropDown from "./subCategory-dropdown";
 import { createDesign } from "../actions/design.action";
 import { useCurrentUser } from "@/features/auth/hooks/use-current-user";
+import { getCategories, getSubCategoriesById } from "../actions/categories.actions";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Design } from "@prisma/client";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 type FormProps = {
     type: "create" | "update";
@@ -47,14 +46,22 @@ const CreateDesignForm: React.FC<FormProps> = ({ type, design }) => {
             published: design?.published ? design?.published : false,
             category: design?.designCategoryId ? design?.designCategoryId : "",
             subCategory: design?.subCategoryId ? design?.subCategoryId : "",
+            type: design?.designType ? design.designType : "HOLIDAY",
         },
     });
-    const queryClient = new QueryClient();
+    const queryClient = useQueryClient();
     const router = useRouter();
-    const user = useCurrentUser()
+    const user = useCurrentUser();
+
+    const categorywatch = form.watch("category")
+
+    useEffect(() => {
+        form.setValue("subCategory", "")
+    }, [form.watch("category")])
 
     const { mutate, isPending } = useMutation({
         mutationFn: async (values: z.infer<typeof designSchema>) => {
+            console.log(values)
             const res = await createDesign({
                 name: values.name,
                 description: values.description,
@@ -62,7 +69,12 @@ const CreateDesignForm: React.FC<FormProps> = ({ type, design }) => {
                 subCategoryId: values.subCategory,
                 pdfLink: values.pdfLink,
                 thumbnailUrl: values.thumbnailUrl,
-            })
+                type: values.type,
+                published: values.published,
+            });
+            console.log({res})
+            if(res?.error) throw new Error(res.error)
+            return res;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["designs"] });
@@ -73,20 +85,34 @@ const CreateDesignForm: React.FC<FormProps> = ({ type, design }) => {
     const onSubmit = (values: z.infer<typeof designSchema>) => {
         mutate(values);
     };
-    const { data: categories, isFetching } = useQuery({
+
+    const { data: categories, isFetching, refetch: refetchCategories } = useQuery({
+        refetchOnWindowFocus: false,
         queryKey: ["categories"],
         queryFn: async () => {
-            const res = await getCategories()
-            return res.data
-        }
-    })
-    const { data: subCategories, isFetching: isSubcategoriesLoading } = useQuery({
-        queryKey: ["sub-categories"],
+            const res = await getCategories({ type: form.getValues("type") });
+            return res.data;
+        },
+    });
+
+    const { data: subCategories, isFetching: isSubcategoriesLoading, refetch } = useQuery({
+        refetchOnWindowFocus: false,
+        queryKey: ["sub-categories", form.watch("category")],
         queryFn: async () => {
-            const res = await getSubCategoriesById(form.getValues("category"))
-            return res
-        }
-    })
+            const res = await getSubCategoriesById(form.getValues("category"));
+            return res;
+        },
+        enabled: !!form.watch("category"),
+    });
+
+    useEffect(() => {
+        form.setValue("category", "")
+        form.setValue("subCategory", "")
+        refetchCategories();
+    }, [form.watch("type")]);
+    useEffect(() => {
+        refetch();
+    }, [form.watch("category")]);
 
     return (
         <Form {...form}>
@@ -157,44 +183,83 @@ const CreateDesignForm: React.FC<FormProps> = ({ type, design }) => {
                 />
                 <FormField
                     control={form.control}
-                    name="category"
+                    name="type"
                     render={({ field }) => (
-                        <FormItem className="flex flex-col gap-2">
-                            <FormLabel>Design Pdf</FormLabel>
+                        <FormItem className="space-y-3">
+                            <FormLabel>Event Type</FormLabel>
                             <FormControl>
-                                {isFetching ? <Skeleton className="w-40 h-10" /> : (
-                                    <CategoryDropDown
-                                        value={field.value}
-                                        onChange={field.onChange}
-                                        categories={categories!}
-                                    />
+                                <RadioGroup
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                    className="flex flex-col space-y-1"
+                                >
+                                    <FormItem className="flex items-center space-x-3 space-y-0">
+                                        <FormControl>
+                                            <RadioGroupItem value="OCCASION" />
+                                        </FormControl>
+                                        <FormLabel className="font-normal">
+                                            Occasion
+                                        </FormLabel>
+                                    </FormItem>
+                                    <FormItem className="flex items-center space-x-3 space-y-0">
+                                        <FormControl>
+                                            <RadioGroupItem value="HOLIDAY" />
+                                        </FormControl>
+                                        <FormLabel className="font-normal">
+                                            Holiday
+                                        </FormLabel>
+                                    </FormItem>
+                                </RadioGroup>
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                {form.getValues("type") && (
+                    <FormField
+                        control={form.control}
+                        name="category"
+                        render={({ field }) => (
+                            <FormItem className="flex flex-col gap-2">
+                                <FormLabel>Category</FormLabel>
+                                <FormControl>
+                                    {isFetching ? <Skeleton className="w-40 h-10" /> : (
+                                        <CategoryDropDown
+                                            type={form.getValues("type")}
+                                            value={field.value}
+                                            onChange={field.onChange}
+                                            categories={categories!}
+                                        />
+                                    )}
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                )}
+                {form.getValues("category") && (
+                    <FormField
+                        control={form.control}
+                        name="subCategory"
+                        render={({ field }) => (
+                            <FormItem className="flex flex-col gap-2">
+                                <FormLabel>Sub Category</FormLabel>
+                                <FormControl>
+                                    {isSubcategoriesLoading ? <Skeleton className="w-40 h-10" /> : (
+                                        <SubCategoryDropDown
+                                            categoryId={form.getValues("category")}
+                                            value={field.value}
+                                            onChange={field.onChange}
+                                            categories={subCategories!}
+                                        />
+                                    )}
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
 
-                                )}
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="subCategory"
-                    render={({ field }) => (
-                        <FormItem className="flex flex-col gap-2">
-                            <FormLabel>Sub Category</FormLabel>
-                            <FormControl>
-                                {isSubcategoriesLoading ? <Skeleton className="w-40 h-10" /> : (
-                                    <SubCategoryDropDown
-                                        categoryId={form.getValues("category")}
-                                        value={field.value}
-                                        onChange={field.onChange}
-                                        categories={subCategories!}
-                                    />
-                                )}
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                )}
                 <FormField
                     control={form.control}
                     name="published"

@@ -18,12 +18,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ArrowRight, MoreVertical, Pencil, Trash } from "lucide-react";
 import { useConfirm } from "@omit/react-confirm-dialog";
-import { QueryClient, useMutation } from "@tanstack/react-query";
+import { QueryClient, useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteBlog } from "../actions/blogs.actions";
 
 const BlogPostCard = ({ blog }: { blog: Blog }) => {
   const confirm = useConfirm();
-const queryClient = new QueryClient()
+const queryClient =useQueryClient()
   const {mutate} = useMutation({
     mutationFn: async () => {
         const res = await deleteBlog(blog.id)

@@ -106,10 +106,16 @@ model TwoFactorConfirmation {
     @@unique([userId])
 }
 
+enum DesignType {
+    OCCASION
+    HOLIDAY
+}
+
 model Design {
     id               String         @id @default(cuid())
     userId           String
     user             User           @relation("UserDesigns", fields: [userId], references: [id])
+    designType       DesignType
     status           DesignStatus   @default(PENDING)
     name             String
     description      String
@@ -129,16 +135,17 @@ model Design {
 model DesignCategory {
     id            String        @id @default(cuid())
     name          String
+    designType    DesignType
     designs       Design[]
     subCategories SubCategory[]
 }
 
 model SubCategory {
-    id               String         @id @default(cuid())
+    id               String     @id @default(cuid())
     name             String
     designCategoryId String
-    designCategory   DesignCategory @relation(fields: [designCategoryId], references: [id])
-    designs          Design[]
+    designCategory DesignCategory @relation(fields: [designCategoryId], references: [id])
+    designs        Design[]
 }
 
 model Order {
