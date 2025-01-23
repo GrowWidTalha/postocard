@@ -1,4 +1,9 @@
 "use client";
+
+import React, { useEffect } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import {
   Form,
   FormControl,
@@ -8,25 +13,19 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import React, { useEffect } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { blogSchema } from "../schemas";
-import { z } from "zod";
 import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
-import Editor from "@/components/editor";
 import { Button } from "@/components/ui/button";
-import { UploadDropzone } from "@/lib/uploadthing";
 import { Switch } from "@/components/ui/switch";
-import { QueryClient, useMutation, useQueryClient } from "@tanstack/react-query";
-import { createBlog } from "../actions/blogs.actions";
-import { useRouter } from "next/navigation";
+import Editor from "@/components/editor";
+import { UploadDropzone } from "@/lib/uploadthing";
 import { Spinner } from "@/components/spinner";
+import { blogSchema, BlogFormProps, BlogFormData } from "../types/blog";
 
-const CreateBlogForm = () => {
-  const form = useForm<z.infer<typeof blogSchema>>({
+const BlogForm: React.FC<BlogFormProps> = ({ blog, onSubmit, isPending }) => {
+  const router = useRouter();
+  const form = useForm<BlogFormData>({
     resolver: zodResolver(blogSchema),
-    defaultValues: {
+    defaultValues: blog || {
       title: "",
       content: "",
       imageUrl: "",
@@ -34,49 +33,27 @@ const CreateBlogForm = () => {
       published: false,
     },
   });
-  const queryClient = useQueryClient();
-  const router = useRouter();
+
   const title = form.watch("title");
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: async (values: z.infer<typeof blogSchema>) => {
-      const res = await createBlog({
-        title: values.title,
-        content: values.content,
-        imageUrl: values.imageUrl,
-        slug: values.slug,
-        author: "Daniel",
-        published: values.published,
-      });
-
-      return res;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["blogs"] });
-      router.push("/blogs");
-    },
-  });
-// TODO: Fix the publish toggle bug
   useEffect(() => {
     const generateSlugFromTitle = () => {
-      const slug = title.toLowerCase().replace(/ /g, "-");
-      form.setValue("slug", slug);
+      if (!blog) { // Only generate slug for new blogs
+        const slug = title.toLowerCase().replace(/ /g, "-");
+        form.setValue("slug", slug);
+      }
     };
 
     generateSlugFromTitle();
-  }, [title, form]);
+  }, [title, form, blog]);
 
-  const onSubmit = (values: z.infer<typeof blogSchema>) => {
-    mutate(values);
+  const handleSubmit = (values: BlogFormData) => {
+    onSubmit(values);
   };
 
   return (
     <Form {...form}>
-      <form
-        onChange={() => console.log(form.getValues("content"))}
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-6"
-      >
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
         <FormField
           control={form.control}
           name="title"
@@ -84,13 +61,12 @@ const CreateBlogForm = () => {
             <FormItem>
               <FormLabel>Title</FormLabel>
               <FormControl>
-                <Input placeholder="Daniel" {...field} />
+                <Input placeholder="Enter blog title" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        {/* TODO: Add froala editor */}
         <FormField
           control={form.control}
           name="slug"
@@ -99,8 +75,9 @@ const CreateBlogForm = () => {
               <FormLabel>Slug</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Url friendly title of your blog post."
+                  placeholder="URL-friendly title of your blog post"
                   {...field}
+                  readOnly={!!blog} // Make slug readonly for existing blogs
                 />
               </FormControl>
               <FormMessage />
@@ -128,13 +105,17 @@ const CreateBlogForm = () => {
               <FormLabel>Image</FormLabel>
               <FormControl>
                 <UploadDropzone
-                  endpoint={"imageUploader"}
-                  onClientUploadComplete={(url) => {
-                    form.setValue("imageUrl", url[0]?.url!);
-                    console.log(url);
+                  endpoint="imageUploader"
+                  onClientUploadComplete={(res) => {
+                    if (res && res.length > 0) {
+                      form.setValue("imageUrl", res[0].url);
+                    }
                   }}
                 />
               </FormControl>
+              {field.value && (
+                <img src={field.value || "/placeholder.svg"} alt="Blog cover" className="mt-2 max-w-xs rounded" />
+              )}
               <FormMessage />
             </FormItem>
           )}
@@ -147,29 +128,25 @@ const CreateBlogForm = () => {
               <div className="space-y-0.5">
                 <FormLabel>Publish</FormLabel>
                 <FormDescription>
-                  Do you want to publish this blog immedietely or save it as a
-                  draft?
+                  Do you want to publish this blog immediately or save it as a draft?
                 </FormDescription>
               </div>
               <FormControl>
                 <Switch
                   checked={field.value}
-                  onCheckedChange={(value) => {
-                    field.onChange(value);
-                    console.log(value);
-                  }}
+                  onCheckedChange={field.onChange}
                 />
               </FormControl>
             </FormItem>
           )}
         />
         <Button type="submit" disabled={isPending}>
-          {isPending && <Spinner size={"small"} className="text-white" />}
-          Create Blog
+          {isPending && <Spinner size="small" className="mr-2 text-white" />}
+          {blog ? 'Update' : 'Create'} Blog
         </Button>
       </form>
     </Form>
   );
 };
 
-export default CreateBlogForm;
+export default BlogForm;

@@ -1,30 +1,22 @@
-import {
-  Home,
-  LucideIcon,
-  ShoppingBag,
-  PackageOpen,
-  Settings,
-  BookA,
-  Printer,
-  PaintRoller
-} from "lucide-react"
-import { PinTopIcon } from "@radix-ui/react-icons"
-import Link from "next/link"
-import { buttonVariants } from "./ui/button"
-import { cn } from "../lib/utils"
-import { BsBoxSeamFill, BsPeopleFill } from "react-icons/bs"
-import { usePathname } from "next/navigation"
-import { useState, useEffect } from "react"
+import { Home, type LucideIcon, ShoppingBag, PackageOpen, Settings, BookA, Printer, PaintRoller, LogOutIcon } from 'lucide-react';
+import { PinTopIcon } from "@radix-ui/react-icons";
+import Link from "next/link";
+import { Button, buttonVariants } from "./ui/button";
+import { cn } from "../lib/utils";
+import { BsBoxSeamFill, BsPeopleFill } from "react-icons/bs";
+import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
+import LogoutButton from "@/features/auth/components/logout-button";
 
 interface SidebarItem {
-  href: string
-  icon: LucideIcon | any
-  text: string
+  href: string;
+  icon: LucideIcon | any;
+  text: string;
 }
 
 interface SidebarCategory {
-  category: string
-  items: SidebarItem[]
+  category: string;
+  items: SidebarItem[];
 }
 
 const SIDEBAR_ITEMS: SidebarCategory[] = [
@@ -34,9 +26,7 @@ const SIDEBAR_ITEMS: SidebarCategory[] = [
   },
   {
     category: "Products",
-    items: [
-      { href: "/designs", icon: PackageOpen, text: "Designs" },
-    ],
+    items: [{ href: "/designs", icon: PackageOpen, text: "Designs" }],
   },
   {
     category: "Orders",
@@ -77,28 +67,27 @@ const SIDEBAR_ITEMS: SidebarCategory[] = [
         icon: Printer,
         text: "Printing providers",
       },
-      { href: "/designers", icon: PaintRoller
-        , text: "Designers" },
+      { href: "/designers", icon: PaintRoller, text: "Designers" },
     ],
   },
-]
+];
 
 export const Sidebar = ({ onClose }: { onClose?: () => void }) => {
-  const pathName = usePathname()
+  const pathName = usePathname();
 
-  if (typeof window === 'undefined') {
-    return null
+  if (typeof window === "undefined") {
+    return null;
   }
 
   return (
-    <div className="flex flex-col w-full gap-10">
-      {/* logo */}
+    <div className="flex flex-col w-full h-full max-h-screen">
+      <div className="flex-shrink-0 p-4 border-b">
         <p className="hidden sm:block text-lg/7 font-semibold text-brand-900">
-            Posto Card
+          Posto Card
         </p>
+      </div>
 
-      {/* navigation items */}
-      <div className="flex-grow overflow-y-auto">
+      <div className="flex-grow overflow-y-auto py-4 px-2">
         <ul>
           {SIDEBAR_ITEMS.map(({ category, items }) => (
             <li key={category} className="mb-4 md:mb-8">
@@ -135,6 +124,29 @@ export const Sidebar = ({ onClose }: { onClose?: () => void }) => {
           ))}
         </ul>
       </div>
+
+      <div className="flex-shrink-0 p-4 border-t">
+        <LogoutButton>
+          <div className="-mx-2 flex flex-1 flex-col">
+            <div
+              className={cn(
+                buttonVariants({ variant: "ghost" }),
+                "w-full justify-start group flex items-center gap-x-2.5 rounded-md px-2 py-1.5 text-sm font-medium leading-6",
+                "text-zinc-700 hover:bg-gray-50 transition"
+              )}
+              onClick={onClose}
+            >
+              <LogOutIcon
+                className={cn(
+                  "size-4",
+                  "text-zinc-500 group-hover:text-zinc-700"
+                )}
+              />
+              Logout
+            </div>
+          </div>
+        </LogoutButton>
+      </div>
     </div>
-  )
-}
+  );
+};

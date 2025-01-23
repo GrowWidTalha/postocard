@@ -1,8 +1,38 @@
 "use server";
 import { db } from "@/db";
 import { currentUser } from "@/features/auth/lib/auth";
-import { DesignType } from "@prisma/client";
+import { Design, DesignType } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
+type UpdateDesignInput = Omit<
+  Design,
+//   "id" | "createdAt" | "updatedAt" | "userId"
+>;
+
+export async function updateDesign(id: string, data: UpdateDesignInput) {
+  try {
+    const updatedDesign = await db.design.update({
+      where: { id },
+      data: {
+        name: data.name,
+        description: data.description,
+        designCategoryId: data.designCategoryId,
+        subCategoryId: data.subCategoryId,
+        pdfLink: data.pdfLink,
+        thumbnailUrl: data.thumbnailUrl,
+        designType: data.designType,
+        published: data.published,
+      },
+    });
+
+    return { data: updatedDesign, error: null, success: true };
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error("Error updating design:", error);
+    }
+    return { error: "Failed to update design. Please try again." };
+  }
+}
 
 const createDesignSchema = z.object({
   name: z.string().nonempty(),
@@ -25,16 +55,14 @@ export const createDesign = async (
     // Validate params using Zod schema
     const validatedParams = createDesignSchema.safeParse(params);
     if (!validatedParams.success) return null;
-    console.log({
-      ...validatedParams,
-      user: auth,
-    });
+
 
     const design = await db.design.create({
       data: {
         name: validatedParams.data.name,
         description: validatedParams.data.description,
         pdfLink: validatedParams.data.pdfLink,
+        createdBy: auth.name!,
         thumbnailUrl: validatedParams.data.thumbnailUrl,
         designCategoryId: validatedParams.data.designCategoryId,
         subCategoryId: validatedParams.data.subCategoryId,
@@ -50,7 +78,7 @@ export const createDesign = async (
       success: true,
     };
   } catch (error: any) {
-    throw Error(error?.message)
+    // throw Error(error?.message);
     return {
       data: null,
       error: error.message,
@@ -59,10 +87,21 @@ export const createDesign = async (
   }
 };
 
+export const deleteDesign = async (id: string) => {
+  try {
+    const res = await db.design.delete({ where: { id } });
+    return res;
+  } catch (error) {
+    if (error instanceof Error) {
+      console.log(error.message);
+    }
+  }
+};
+
 export const getAllDesigns = async () => {
   try {
-    const designs = await db.design.findMany();
-// console.log(designs)
+    const designs = await db.design.findMany({ include: { user: true, designCategory: true, subCategory: true } });
+    // console.log(designs)
     return {
       data: designs,
       error: null,
@@ -86,11 +125,14 @@ export const getDesignById = async (id: string) => {
       error: null,
       success: true,
     };
-  } catch (error: any) {
-    console.log("Error fetching  design by id: ", error);
+  } catch (error) {
+    if (error instanceof Error) {
+      console.log("Error fetching  design by id: ", error);
+    }
+
     return {
       data: null,
-      error: error.message,
+      error: "something went wrong.",
       success: false,
     };
   }

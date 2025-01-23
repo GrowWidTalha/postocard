@@ -121,7 +121,7 @@ model Design {
     description      String
     pdfLink          String
     thumbnailUrl     String
-    createdBy        String         @default("admin")
+    createdBy        String
     published        Boolean        @default(false)
     createdAt        DateTime       @default(now())
     updatedAt        DateTime       @updatedAt
