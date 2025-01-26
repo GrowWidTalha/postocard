@@ -20,10 +20,10 @@ interface SidebarCategory {
 }
 
 const SIDEBAR_ITEMS: SidebarCategory[] = [
-  {
-    category: "Overview",
-    items: [{ href: "/", icon: Home, text: "Dashboard" }],
-  },
+//   {
+//     category: "Overview",
+//     items: [{ href: "/", icon: Home, text: "Dashboard" }],
+//   },
   {
     category: "Products",
     items: [{ href: "/designs", icon: PackageOpen, text: "Designs" }],
@@ -31,12 +31,12 @@ const SIDEBAR_ITEMS: SidebarCategory[] = [
   {
     category: "Orders",
     items: [
-      { href: "/dashboard/orders", icon: BsBoxSeamFill, text: "All Orders" },
-      {
-        href: "/dashboard/orders/pending",
-        icon: ShoppingBag,
-        text: "Pending Orders",
-      },
+      { href: "/orders", icon: BsBoxSeamFill, text: "All Orders" },
+    //   {
+    //     href: "/orders/pending",
+    //     icon: ShoppingBag,
+    //     text: "Pending Orders",
+    //   },
     ],
   },
   {
