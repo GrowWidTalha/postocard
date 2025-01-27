@@ -1,0 +1,153 @@
+import {
+    Home,
+    LucideIcon,
+    ShoppingBag,
+    PackageOpen,
+    BookA,
+    Printer,
+    PaintRoller
+  } from "lucide-react"
+  import Link from "next/link"
+  import { buttonVariants } from "./ui/button"
+  import { cn } from "../lib/utils"
+  import { BsBoxSeamFill, BsPeopleFill } from "react-icons/bs"
+  import { usePathname } from "next/navigation"
+  
+  interface SidebarItem {
+    href: string
+    icon: LucideIcon | any
+    text: string
+  }
+  
+  interface SidebarCategory {
+    category: string
+    items: SidebarItem[]
+  }
+  
+  const SIDEBAR_ITEMS: SidebarCategory[] = [
+    {
+      category: "Overview",
+      items: [{ href: "/", icon: Home, text: "Dashboard" }],
+    },
+    {
+      category: "Products",
+      items: [
+        { href: "/designs", icon: PackageOpen, text: "Designs" },
+      ],
+    },
+    {
+      category: "Orders",
+      items: [
+        { href: "/dashboard/orders", icon: BsBoxSeamFill, text: "All Orders" },
+        {
+          href: "/dashboard/orders/pending",
+          icon: ShoppingBag,
+          text: "Pending Orders",
+        },
+      ],
+    },
+    {
+      category: "Blog",
+      items: [
+        {
+          href: "/blogs",
+          icon: BookA,
+          text: "Blog Posts",
+        },
+      ],
+    },
+    {
+      category: "Customers",
+      items: [
+        {
+          href: "/customers",
+          icon: BsPeopleFill,
+          text: "All Customers",
+        },
+      ],
+    },
+    {
+      category: "Team",
+      items: [
+        {
+          href: "/printing-providers",
+          icon: Printer,
+          text: "Printing providers",
+        },
+        { href: "/designers", icon: PaintRoller
+          , text: "Designers" },
+      ],
+    },
+  ]
+  
+  export const Sidebar = ({ onClose }: { onClose?: () => void }) => {
+    const pathName = usePathname()
+  
+    if (typeof window === 'undefined') {
+      return null
+    }
+  
+    return (
+      <div className="flex flex-col w-full gap-10">
+        {/* logo */}
+        <button
+          type="button"
+          id="radix-:Rluult7:"
+          aria-haspopup="menu"
+          aria-expanded={false}
+          aria-controls={undefined}
+          data-state="closed"
+          data-disabled={undefined}
+          disabled={false}
+          className="flex flex-row items-center h-full px-5 rounded-l-..."
+          onPointerDown={function handleEvent() {}}
+          onKeyDown={function handleEvent() {}}
+          ref={function() {}}
+        >
+          <p className="hidden sm:block text-lg/7 font-semibold text-brand-900">
+              Posto Card
+          </p>
+        </button>
+  
+        {/* navigation items */}
+        <div className="flex-grow">
+          <ul>
+            {SIDEBAR_ITEMS.map(({ category, items }) => (
+              <li key={category} className="mb-4 md:mb-8">
+                <p className="text-xs font-medium leading-6 text-zinc-500">
+                  {category}
+                </p>
+                <div className="-mx-2 flex flex-1 flex-col">
+                  {items.map((item, i) => (
+                    <Link
+                      key={i}
+                      href={item.href}
+                      className={cn(
+                        buttonVariants({ variant: "ghost" }),
+                        "w-full justify-start group flex items-center gap-x-2.5 rounded-md px-2 py-1.5 text-sm font-medium leading-6",
+                        pathName === item.href
+                          ? "bg-gray-100 text-zinc-900"
+                          : "text-zinc-700 hover:bg-gray-50 transition"
+                      )}
+                      onClick={onClose}
+                    >
+                      <item.icon
+                        className={cn(
+                          "size-4",
+                          pathName === item.href
+                            ? "text-zinc-700"
+                            : "text-zinc-500 group-hover:text-zinc-700"
+                        )}
+                      />
+                      {item.text}
+                    </Link>
+                  ))}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    )
+  }
+  

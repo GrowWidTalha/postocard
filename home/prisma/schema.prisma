@@ -1,0 +1,174 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+    USER
+    ADMIN
+    PRINTING_PROVIDER
+    DESIGNER
+}
+
+enum DesignStatus {
+    PENDING
+    APPROVED
+    DISABLED
+}
+
+enum OrderStatus {
+    PENDING
+    PROCESSING
+    PRINTED
+    SHIPPED
+    DELIVERED
+}
+
+enum PrintStatus {
+    PENDING
+    ASSIGNED
+    PRINTED
+    APPROVED
+    SHIPPED
+}
+
+model User {
+    id                    String                 @id @default(cuid())
+    name                  String?
+    email                 String?                @unique
+    emailVerified         DateTime?
+    image                 String?
+    password              String?
+    role                  UserRole               @default(USER)
+    isTwoFactorEnabled    Boolean                @default(false)
+    twoFactorConfirmation TwoFactorConfirmation?
+    accounts              Account[]
+    designs               Design[]               @relation("UserDesigns")
+    orders                Order[]                @relation("UserOrders")
+    assignedOrders        Order[]                @relation("AssignedOrders")
+}
+
+model Account {
+    id                String  @id @default(cuid())
+    userId            String
+    type              String
+    provider          String
+    providerAccountId String
+    refreshToken      String? @db.Text
+    accessToken       String? @db.Text
+    expiresAt         Int?
+    tokenType         String?
+    scope             String?
+    idToken           String? @db.Text
+    sessionState      String?
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([provider, providerAccountId])
+}
+
+model VerificationToken {
+    id      String   @id @unique @default(cuid())
+    email   String
+    token   String   @unique
+    expires DateTime
+
+    @@unique([email, token])
+}
+
+model PasswordResetToken {
+    id      String   @id @unique @default(cuid())
+    email   String
+    token   String   @unique
+    expires DateTime
+
+    @@unique([email, token])
+}
+
+model TwoFactorToken {
+    id      String   @id @unique @default(cuid())
+    email   String
+    token   String   @unique
+    expires DateTime
+
+    @@unique([email, token])
+}
+
+model TwoFactorConfirmation {
+    id     String @id @default(cuid())
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([userId])
+}
+
+model Design {
+    id               String         @id @default(cuid())
+    userId           String
+    user             User           @relation("UserDesigns", fields: [userId], references: [id])
+    status           DesignStatus   @default(PENDING)
+    name             String
+    description      String
+    pdfLink          String
+    thumbnailUrl     String
+    createdBy        String         @default("admin")
+    published        Boolean        @default(false)
+    createdAt        DateTime       @default(now())
+    updatedAt        DateTime       @updatedAt
+    orders           Order[]        @relation("DesignOrders")
+    designCategoryId String
+    designCategory   DesignCategory @relation(fields: [designCategoryId], references: [id])
+    subCategoryId    String?
+    subCategory      SubCategory?   @relation(fields: [subCategoryId], references: [id])
+}
+
+model DesignCategory {
+    id            String        @id @default(cuid())
+    name          String
+    designs       Design[]
+    subCategories SubCategory[]
+}
+
+model SubCategory {
+    id               String         @id @default(cuid())
+    name             String
+    designCategoryId String
+    designCategory   DesignCategory @relation(fields: [designCategoryId], references: [id])
+    designs          Design[]
+}
+
+model Order {
+    id               String      @id @default(cuid())
+    userId           String
+    user             User        @relation("UserOrders", fields: [userId], references: [id])
+    assigneeId       String?
+    assignee         User?       @relation("AssignedOrders", fields: [assigneeId], references: [id])
+    designId         String
+    design           Design      @relation("DesignOrders", fields: [designId], references: [id])
+    customMessage    String
+    printStatus      PrintStatus @default(PENDING)
+    status           OrderStatus @default(PENDING)
+    recipientName    String
+    recipientAddress String
+    createdAt        DateTime    @default(now())
+    updatedAt        DateTime    @updatedAt
+}
+
+model Blog {
+    id        String   @id @default(cuid())
+    createdBy String   @default("admin")
+    likes     Int      @default(0)
+    views     Int      @default(0)
+    title     String
+    author    String
+    slug      String
+    published Boolean  @default(false)
+    content   String
+    imageUrl  String?
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
