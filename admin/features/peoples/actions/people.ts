@@ -16,13 +16,30 @@ export const getUsersByRole = async (role: UserRole) => {
         designs: true,
         orders: true,
         assignedOrders: true,
-
       },
     });
 
-    return users
+    return users;
   } catch (error) {
-    console.error("Something went wrong fetching all users by role: ");
+    console.error("Something went wrong fetching all users by role: ", error);
+  }
+};
+
+export const deleteUser = async (userId: string) => {
+  try {
+    const user = await db.user.delete({ where: { id: userId } });
+
+    return {
+      data: user,
+      success: true,
+      error: null,
+    };
+  } catch (error: any) {
+    return {
+      data: null,
+      success: true,
+      error: error.message,
+    };
   }
 };
 

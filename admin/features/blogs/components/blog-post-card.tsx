@@ -18,12 +18,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ArrowRight, MoreVertical, Pencil, Trash } from "lucide-react";
 import { useConfirm } from "@omit/react-confirm-dialog";
-import { QueryClient, useMutation } from "@tanstack/react-query";
+import { QueryClient, useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteBlog } from "../actions/blogs.actions";
+import Link from "next/link";
 
 const BlogPostCard = ({ blog }: { blog: Blog }) => {
   const confirm = useConfirm();
-const queryClient = new QueryClient()
+const queryClient =useQueryClient()
   const {mutate} = useMutation({
     mutationFn: async () => {
         const res = await deleteBlog(blog.id)
@@ -41,8 +42,8 @@ const queryClient = new QueryClient()
         description: "Are you sure you want to delete this item?",
         confirmText: "Delete",
         cancelText: "Cancel",
-        // confirmButton: <Button variant={"destructive"}>Delete</Button>,
-        // cancelButton: <Button variant={"outline"}>Cancel</Button>,
+        confirmButton: <Button variant={"destructive"}>Delete</Button>,
+        cancelButton: <Button variant={"outline"}>Cancel</Button>,
       });
 
       if (isConfirmed) {
@@ -51,7 +52,7 @@ const queryClient = new QueryClient()
     } catch (error) {}
   };
   return (
-    <Card className="group relative shadow-lg rounded-lg overflow-hidden">
+    <Card className="group relative rounded-lg overflow-hidden">
       <CardHeader className="p-0">
         {/* Action buttons positioned absolutely in top-right */}
         <div className="absolute top-2 right-2 z-10">
@@ -62,9 +63,11 @@ const queryClient = new QueryClient()
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href={`/blogs/update/${blog.id}`}>
                 <Pencil className="mr-2 h-4 w-4" />
                 Edit
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="text-destructive"
@@ -105,6 +108,7 @@ const queryClient = new QueryClient()
 
       <CardFooter className="p-4 pt-0">
         <Button variant="ghost" className="ml-auto group" size="sm">
+            {/* TODO: Add view functionality */}
           View
           <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
         </Button>

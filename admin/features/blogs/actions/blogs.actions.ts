@@ -92,7 +92,6 @@ export const updateBlog = async ({
   content,
   imageUrl,
   slug,
-  author,
   published,
   id,
 }: {
@@ -100,7 +99,6 @@ export const updateBlog = async ({
   content: string;
   imageUrl: string;
   slug: string;
-  author: string;
   published: boolean;
   id: string;
 }) => {
@@ -114,7 +112,7 @@ export const updateBlog = async ({
         content,
         imageUrl,
         slug,
-        author,
+        published
       },
     });
 

@@ -2,7 +2,7 @@
 
 import { Spinner } from "@/components/spinner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getUsersByRole } from "@/features/peoples/actions/people";
+import { deleteUser, getUsersByRole } from "@/features/peoples/actions/people";
 import { cn } from "@/lib/utils";
 import {
   Table,
@@ -17,7 +17,7 @@ import { User as PrismaUser, UserRole } from "@prisma/client";
 interface User extends PrismaUser {
   designs: { length: number };
 }
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ColumnDef,
   flexRender,
@@ -36,8 +36,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useConfirm } from "@omit/react-confirm-dialog";
 
 const DesignerPageContent = ({ designers }: { designers?: User[] }) => {
+  const confirm = useConfirm();
+  const queryClient = useQueryClient()
+  const { mutate } = useMutation({
+    mutationFn: async (id: string) => {
+      const res = await deleteUser(id);
+      return res;
+    },
+    onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["users", UserRole.DESIGNER]})
+    }
+  });
   const { data, isPending } = useQuery({
     queryKey: ["users", UserRole.DESIGNER],
     initialData: designers,
@@ -82,6 +94,22 @@ const DesignerPageContent = ({ designers }: { designers?: User[] }) => {
         accessorKey: "actions",
         header: "Actions",
         cell: ({ row }) => {
+          const handleDelete = async () => {
+            try {
+              const isConfirmed = await confirm({
+                title: "Delete Item",
+                description: "Are you sure you want to delete this item?",
+                confirmText: "Delete",
+                cancelText: "Cancel",
+                // confirmButton: <Button variant={"destructive"}>Delete</Button>,
+                // cancelButton: <Button variant={"outline"}>Cancel</Button>,
+              });
+
+              if (isConfirmed) {
+                mutate(row.original.id);
+              }
+            } catch (error) {}
+          };
           return (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -99,9 +127,14 @@ const DesignerPageContent = ({ designers }: { designers?: User[] }) => {
                 >
                   Copy Email
                 </DropdownMenuItem>
-                {/* <DropdownMenuSeparator />
-                <DropdownMenuItem>View customer</DropdownMenuItem>
-                <DropdownMenuItem>View payment details</DropdownMenuItem> */}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={handleDelete}
+                  className="text-red-500"
+                >
+                  Delete User
+                </DropdownMenuItem>
+                <DropdownMenuItem>View payment details</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           );

@@ -9,6 +9,10 @@ import { PropsWithChildren, useState } from "react";
 import { Toaster } from "./ui/sonner";
 import { ConfirmDialogProvider } from "@omit/react-confirm-dialog";
 
+<<<<<<< HEAD
+=======
+import AuthProvider from "../features/auth/components/auth-provider";
+>>>>>>> 41e2ed688c58c9ff04da4c17fe54ab47913bf8bf
 
 const queryClient = new QueryClient({
   queryCache: new QueryCache({

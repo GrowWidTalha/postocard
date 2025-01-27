@@ -69,7 +69,11 @@ export const Modal = ({
   return (
     <Dialog
       open={setShowModal ? showModal : true}
+<<<<<<< HEAD
       onOpenChange={(open: any) => {
+=======
+      onOpenChange={(open) => {
+>>>>>>> 41e2ed688c58c9ff04da4c17fe54ab47913bf8bf
         if (!open) {
           closeModal({ dragged: true })
         }

@@ -6,6 +6,13 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+<<<<<<< HEAD
+=======
+html, body, :root {
+    height: 100%;
+}
+
+>>>>>>> 41e2ed688c58c9ff04da4c17fe54ab47913bf8bf
 @layer base {
   :root {
     --background: 0 0% 100%;
