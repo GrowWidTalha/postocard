@@ -5,14 +5,14 @@ export default function GreetingCardComponent() {
     <div className="bg-yellow-500 py-10">
       <div className="max-w-5xl mx-auto text-center">
         {/* Header Section */}
-        <h1 className="text-white text-4xl font-bold">
-          Free Personalized Greeting Card App
+        <h1 className="text-white text-5xl font-bold">
+          PostoCard Personalized Greeting Card App
+          <br />
+          <span className="text-white text-3xl font-bold">A Thoughtful Touch for Every Occasion
+          </span>
         </h1>
         <p className="mt-4 text-white text-lg">
-          The Print on Demand Greeting Card App for Shopify & WooCommerce. Choose
-          from thousands of ready-to-use designs or add your own personal touch by
-          creating and uploading your own designs. Once ordered, we’ll print and send
-          the cards directly to the recipient from one of our global centers Location.
+        At PostoCard, we believe that every message deserves a personal touch. Our beautifully designed 5x7-inch greeting cards let you celebrate life’s special moments in a way that’s truly unique. Whether it's a birthday, holiday, anniversary, or just a heartfelt note, our custom print-on-demand cards make every occasion more meaningful—all from the comfort of your home.
         </p>
       </div>
 
@@ -21,7 +21,7 @@ export default function GreetingCardComponent() {
         {/* Card 1 */}
         <div className="bg-white shadow-md rounded-lg overflow-hidden w-60">
           <Image
-            src="/1.1.webp" // Replace with an actual image
+            src="/1.0.webp" // Replace with an actual image
             alt="Happy Birthday"
             width={240}
             height={320}

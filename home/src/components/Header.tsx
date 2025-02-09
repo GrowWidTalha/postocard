@@ -11,13 +11,16 @@ import {
 } from "./ui/sheet";
 import { Menu } from "lucide-react";
 import { FaUsers } from "react-icons/fa";
+import Link from "next/link";
 
 export const Navbar = () => {
   return (
-    <nav className="w-full border-b-2 border-gray-300 p-4 ">
-      <div className="max-w-7xl mx-auto w-full  flex justify-between">
+    <nav className="w-full border-b-2 border-gray-300 p-4  ">
+      <div className="max-w-7xl mx-auto w-full  flex justify-between ">
         <div className="flex items-center gap-2 ">
-            <img src="4.jpg" alt="alt" width={50} height={70}/>
+          <Link href="/">
+            <img src="4.jpg" alt="alt" width={50} height={70} className="w-[50px] h-[32px] md:w-[60px] md:h-[40px] cursor-pointer"/>
+          </Link>
           <h1 className="text-3xl font-bold text-yellow-500">
             Posto Card
           </h1>
@@ -26,8 +29,8 @@ export const Navbar = () => {
           <a href={"/"} className="text-md font-normal">
             Home
           </a>
-          <a href={"/Cardz"} className="text-md font-normal flex items-center">
-            Cardz
+          <a href={"/Cards"} className="text-md font-normal flex items-center">
+            Cards
           </a>
           <a href={"/blog"} className="text-md font-normal">
             Blog
@@ -38,11 +41,11 @@ export const Navbar = () => {
         </div>
         <div className=" gap-4 hidden md:flex">
           <div className="p-2 gap-2 flex ">
-            <span>
+            {/* <span>
               <User />
-            </span>
+            </span> */}
           </div>
-          <Button variant={"outline"} size={"icon"} className="rounded-full">
+          {/* <Button variant={"outline"} size={"icon"} className="rounded-full">
             <Heart />
           </Button>
           <Button variant={"outline"} size={"icon"} className="rounded-full">
@@ -50,67 +53,9 @@ export const Navbar = () => {
           </Button>
           <Button variant={"outline"} size={"icon"} className="rounded-full">
             <Search />
-          </Button>
+          </Button> */}
         </div>
-        <Sheet>
-          <SheetTrigger className="flex md:hidden">
-            <Button variant={"outline"} size={"icon"}>
-              <Menu className="size-4 text-gray-400" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side={"right"}>
-            <SheetHeader className="flex items-center">
-              <SheetTitle>Furniro</SheetTitle>
-            </SheetHeader>
-            <div className=" flex flex-col gap-4 mt-6">
-              <a href={"#"} className="text-md font-normal">
-                Home
-              </a>
-              <a href={"#"} className="text-md font-normal">
-                Cardz
-              </a>
-              <a href={"#"} className="text-md font-normal">
-                About
-              </a>
-
-              <a href={"#"} className="text-md font-normal">
-                Contact
-              </a>
-
-              <div className="mt-4">
-                <div className="p-2 gap-2 flex  ">
-                  <span>
-                    {" "}
-                    <FaUsers />
-                  </span>
-                </div>
-                <div className="flex mt-6 gap-4">
-                  <Button
-                    variant={"outline"}
-                    size={"icon"}
-                    className="rounded-full"
-                  >
-                    <Heart />
-                  </Button>
-                  <Button
-                    variant={"outline"}
-                    size={"icon"}
-                    className="rounded-full"
-                  >
-                    <ShoppingCart />
-                  </Button>
-                  <Button
-                    variant={"outline"}
-                    size={"icon"}
-                    className="rounded-full"
-                  >
-                    <Search />
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </SheetContent>
-        </Sheet>
+        {/* / */}
       </div>
     </nav>
   );
