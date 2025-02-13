@@ -96,14 +96,14 @@ const OrdersTable = ({
               <Badge
                 className={cn(
                   row.original.status === "PENDING" &&
-                    "bg-slate-400 text-white",
+                    "bg-gray-400 text-white",
                   row.original.status === "PROCESSING" &&
-                    "bg-orange-400 text-white",
-                  row.original.status === "PRINTED" && "bg-blue-400 text-white",
+                    "bg-yellow-400 text-white",
+                  row.original.status === "PRINTED" && "bg-indigo-400 text-white",
                   row.original.status === "SHIPPED" &&
-                    "bg-green-400 text-white",
+                    "bg-teal-400 text-white",
                   row.original.status === "DELIVERED" &&
-                    "bg-fuchsia-400 text-white"
+                    "bg-purple-400 text-white"
                 )}
               >
                 {row.original.status}
@@ -213,7 +213,7 @@ const OrdersTable = ({
                 </TableCell>
               </TableRow>
             )}
-          </TableBody>{" "}
+          </TableBody>
         </Table>
       </CardContent>
     </Card>

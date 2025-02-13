@@ -221,7 +221,7 @@ const PrintingProviderContent = ({
                 </TableCell>
               </TableRow>
             )}
-          </TableBody>{" "}
+          </TableBody>
         </Table>
       </CardContent>
     </Card>

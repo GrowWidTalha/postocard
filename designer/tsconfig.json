@@ -22,10 +22,6 @@
       "@/*": ["./*"]
     }
   },
-<<<<<<< HEAD
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-=======
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/revenue.tsx"],
->>>>>>> 41e2ed688c58c9ff04da4c17fe54ab47913bf8bf
   "exclude": ["node_modules"]
 }

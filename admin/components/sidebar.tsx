@@ -81,10 +81,8 @@ export const Sidebar = ({ onClose }: { onClose?: () => void }) => {
 
   return (
     <div className="flex flex-col w-full h-full max-h-screen">
-      <div className="flex-shrink-0 p-4 border-b">
-        <p className="hidden sm:block text-lg/7 font-semibold text-brand-900">
+      <div className="flex-shrink-0 p-4 border-b hidden sm:block text-lg/7 font-semibold text-brand-900">
           Posto Card
-        </p>
       </div>
 
       <div className="flex-grow overflow-y-auto py-4 px-2">

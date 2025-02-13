@@ -1,6 +1,6 @@
 import DashboardPage from "@/components/dashboard-page";
 import { Button } from "@/components/ui/button";
-import DesignForm from "@/features/designs/components/createDesignForm";
+import {DesignForm} from "@/features/designs/components/createDesignForm";
 import Link from "next/link";
 import React from "react";
 

@@ -36,6 +36,11 @@ enum PrintStatus {
     SHIPPED
 }
 
+enum DesignType {
+    OCCASION
+    HOLIDAY
+}
+
 model User {
     id                    String                 @id @default(cuid())
     name                  String?
@@ -43,13 +48,19 @@ model User {
     emailVerified         DateTime?
     image                 String?
     password              String?
+    phone                 String? // NEW: to support mobile communication and reminders
     role                  UserRole               @default(USER)
+    membershipExpiresAt   DateTime? // NEW: stores membership expiry for annual memberships
     isTwoFactorEnabled    Boolean                @default(false)
     twoFactorConfirmation TwoFactorConfirmation?
     accounts              Account[]
     designs               Design[]               @relation("UserDesigns")
     orders                Order[]                @relation("UserOrders")
     assignedOrders        Order[]                @relation("AssignedOrders")
+    cartItems             CartItem[] // NEW: relation for shopping cart items
+    contacts              Contact[] // NEW: relation for contacts in the address book
+    addresses             Address[] // NEW: relation for saved addresses
+    reminders             Reminder[] // NEW: relation for reminders (e.g., birthdays)
 }
 
 model Account {
@@ -106,30 +117,28 @@ model TwoFactorConfirmation {
     @@unique([userId])
 }
 
-enum DesignType {
-    OCCASION
-    HOLIDAY
-}
-
 model Design {
-    id               String         @id @default(cuid())
-    userId           String
-    user             User           @relation("UserDesigns", fields: [userId], references: [id])
-    designType       DesignType
-    status           DesignStatus   @default(PENDING)
-    name             String
-    description      String
-    pdfLink          String
-    thumbnailUrl     String
-    createdBy        UserRole
-    published        Boolean        @default(false)
-    createdAt        DateTime       @default(now())
-    updatedAt        DateTime       @updatedAt
-    orders           Order[]        @relation("DesignOrders")
-    designCategoryId String
-    designCategory   DesignCategory @relation(fields: [designCategoryId], references: [id])
-    subCategoryId    String?
-    subCategory      SubCategory?   @relation(fields: [subCategoryId], references: [id])
+    id                String         @id @default(cuid())
+    userId            String
+    user              User           @relation("UserDesigns", fields: [userId], references: [id])
+    designType        DesignType
+    status            DesignStatus   @default(PENDING)
+    name              String
+    description       String
+    pdfLink           String
+    pdfUploadId       String? // NEW: stores file ID from UploadThing for the PDF
+    thumbnailUrl      String
+    thumbnailUploadId String? // NEW: stores file ID from UploadThing for the thumbnail
+    createdBy         String
+    published         Boolean        @default(false)
+    createdAt         DateTime       @default(now())
+    updatedAt         DateTime       @updatedAt
+    orders            Order[]        @relation("DesignOrders")
+    designCategoryId  String
+    designCategory    DesignCategory @relation(fields: [designCategoryId], references: [id])
+    subCategoryId     String?
+    subCategory       SubCategory?   @relation(fields: [subCategoryId], references: [id])
+    CartItem          CartItem[]
 }
 
 model DesignCategory {
@@ -141,17 +150,18 @@ model DesignCategory {
 }
 
 model SubCategory {
-    id               String     @id @default(cuid())
+    id               String         @id @default(cuid())
     name             String
     designCategoryId String
-    designCategory DesignCategory @relation(fields: [designCategoryId], references: [id])
-    designs        Design[]
+    designCategory   DesignCategory @relation(fields: [designCategoryId], references: [id])
+    designs          Design[]
 }
 
 model Order {
     id               String      @id @default(cuid())
-    userId           String
-    user             User        @relation("UserOrders", fields: [userId], references: [id])
+    userId           String? // UPDATED: made optional to support guest checkout
+    user             User?       @relation("UserOrders", fields: [userId], references: [id])
+    guestEmail       String? // NEW: for guest checkout orders
     assigneeId       String?
     assignee         User?       @relation("AssignedOrders", fields: [assigneeId], references: [id])
     designId         String
@@ -161,8 +171,12 @@ model Order {
     status           OrderStatus @default(PENDING)
     recipientName    String
     recipientAddress String
+    senderName       String? // NEW: for the sender's address (if needed)
+    senderAddress    String? // NEW: for the sender's address (if needed)
     createdAt        DateTime    @default(now())
     updatedAt        DateTime    @updatedAt
+    stripePaymentId  String? // legacy field – if needed for backward compatibility
+    paypalPaymentId  String? // NEW: for PayPal payment integration
 }
 
 model Blog {
@@ -178,4 +192,58 @@ model Blog {
     imageUrl  String?
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+}
+
+/// NEW: A model for saved addresses (e.g., Home, Office)
+model Address {
+    id        String   @id @default(cuid())
+    userId    String
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    label     String // e.g., "Home", "Office"
+    address   String // full address text
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+/// NEW: A model for contacts in a user's address book (with optional reminders)
+model Contact {
+    id          String     @id @default(cuid())
+    userId      String
+    user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+    name        String
+    email       String?
+    phone       String?
+    birthday    DateTime?
+    anniversary DateTime?
+    address     String?
+    createdAt   DateTime   @default(now())
+    updatedAt   DateTime   @updatedAt
+    Reminder    Reminder[]
+}
+
+/// NEW: A model for shopping cart items (if you choose to persist the cart)
+model CartItem {
+    id            String   @id @default(cuid())
+    userId        String? // optional to support guest users
+    user          User?    @relation(fields: [userId], references: [id])
+    designId      String
+    design        Design   @relation(fields: [designId], references: [id])
+    quantity      Int      @default(1)
+    customMessage String?
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime @updatedAt
+}
+
+/// NEW: A model for setting up reminders (e.g., birthdays, anniversaries)
+model Reminder {
+    id           String   @id @default(cuid())
+    userId       String
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    contactId    String?
+    contact      Contact? @relation(fields: [contactId], references: [id])
+    type         String // e.g., "birthday", "anniversary"
+    reminderDate DateTime
+    message      String?
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @updatedAt
 }
