@@ -112,13 +112,8 @@ export {
   Dialog,
   DialogPortal,
   DialogOverlay,
-<<<<<<< HEAD
-  DialogTrigger,
-  DialogClose,
-=======
   DialogClose,
   DialogTrigger,
->>>>>>> 41e2ed688c58c9ff04da4c17fe54ab47913bf8bf
   DialogContent,
   DialogHeader,
   DialogFooter,

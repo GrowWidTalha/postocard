@@ -10,6 +10,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import React, { useState, useCallback, useEffect } from 'react'
 import { DesignStatus } from '@prisma/client'
 import { useDebounce } from '@/hooks/useDebounce'
+import { useQuery } from '@tanstack/react-query'
 
 const DesignsFilters = () => {
     const router = useRouter()
@@ -39,11 +40,11 @@ const DesignsFilters = () => {
             params.delete('category')
         }
         router.push(`?${params.toString()}`, { scroll: false })
-    }, [debouncedQuery, status, category, router, searchParams])
+    }, [debouncedQuery, status, category, router, searchParams,])
 
     useEffect(() => {
         updateSearchParams()
-    }, [debouncedQuery, status, category, updateSearchParams])
+    }, [debouncedQuery, status, category, updateSearchParams,])
 
     return (
         <div className="flex flex-col sm:flex-row gap-4 items-end">
@@ -63,7 +64,7 @@ const DesignsFilters = () => {
                     Status
                 </label>
                 <Select value={status || ""} onValueChange={setStatus}>
-                    <SelectTrigger id="status" className="w-[180px]">
+                    <SelectTrigger id="status" className="w-[180px] bg-background">
                         <SelectValue placeholder="Select status" />
                     </SelectTrigger>
                     <SelectContent>
@@ -82,7 +83,7 @@ const DesignsFilters = () => {
                     Category
                 </label>
                 <Select value={category || "all"} onValueChange={setCategory}>
-                    <SelectTrigger id="category" className="w-[180px]">
+                    <SelectTrigger id="category" className="w-[180px] bg-background">
                         <SelectValue placeholder="Select category" />
                     </SelectTrigger>
                     <SelectContent>

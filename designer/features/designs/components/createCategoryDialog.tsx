@@ -45,7 +45,7 @@ const CreateCategoryDialog = ({ children, type }: { children: React.ReactNode, t
             <DialogContent>
                 <DialogTitle>Add Category</DialogTitle>
                 <Form {...form}>
-                    <form className='space-y-6' onSubmit={form.handleSubmit(onSubmit)}>
+                    <form className='space-y-6' onSubmit={e => { e.preventDefault(); onSubmit(form.getValues()) }}>
                         <FormField
                             control={form.control}
                             name="name"
@@ -60,9 +60,9 @@ const CreateCategoryDialog = ({ children, type }: { children: React.ReactNode, t
                             )}
                         />
                         <DialogFooter>
-                            <Button type="submit" disabled={isPending}>
+                            <Button type="button" onClick={form.handleSubmit(onSubmit)} disabled={isPending}>
                                 {isPending && <Spinner size={"small"} className="text-white" />}
-                                Create Blog
+                                Add Category
                             </Button>
                         </DialogFooter>
                     </form>

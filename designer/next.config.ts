@@ -1,11 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-<<<<<<< HEAD
-  /* config options here */
-};
-
-=======
   images: {
     remotePatterns: [
       {
@@ -18,6 +13,11 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '12mb',
+    },
+  },
+
 };
->>>>>>> 41e2ed688c58c9ff04da4c17fe54ab47913bf8bf
 export default nextConfig;
