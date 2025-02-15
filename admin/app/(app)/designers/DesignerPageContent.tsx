@@ -213,7 +213,7 @@ const DesignerPageContent = ({ designers }: { designers?: User[] }) => {
                 </TableCell>
               </TableRow>
             )}
-          </TableBody>{" "}
+          </TableBody>
         </Table>
       </CardContent>
     </Card>

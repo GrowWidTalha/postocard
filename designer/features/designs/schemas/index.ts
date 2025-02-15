@@ -8,6 +8,8 @@ export const designSchema = z.object({
   category: z.string(),
   subCategory: z.string(),
   published: z.boolean(),
+  thumbnailUploadId: z.string(),
+  pdfUploadId: z.string(),
 
   type: z.enum(["HOLIDAY", "OCCASION"])
 });

@@ -3,14 +3,14 @@ import { db } from "@/db";
 import { OrderStatus } from "@prisma/client";
 
 export const getAllOrders = async () => {
-  try {
-    const data = await db.order.findMany({ include: { user: true } });
-
-    return data;
-  } catch (error) {
-    console.log("Error while fetching orders: ", error);
-  }
-};
+    try {
+      const data = await db.order.findMany({ include: { user: true } });
+      return  data
+    } catch (error: any) {
+      console.error("Error while fetching orders: ", error);
+      return { error: error.message };
+    }
+  };
 
 export const deleteOrder = async (id: string) => {
   try {

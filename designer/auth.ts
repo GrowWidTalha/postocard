@@ -33,7 +33,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (!existingUser || !existingUser.emailVerified) {
         return false;
       }
-      // todo: add 2fa check
 
       if (existingUser.isTwoFactorEnabled) {
         const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(
@@ -41,7 +40,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         );
         if (!twoFactorConfirmation) return false;
 
-        // TODO: Delete two factor confirmation for next signin
         await db.twoFactorConfirmation.delete({
           where: { id: twoFactorConfirmation.id },
         });

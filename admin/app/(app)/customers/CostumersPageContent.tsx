@@ -181,7 +181,7 @@ const CustomersPageContent = ({ customers }: { customers?: User[] }) => {
                 </TableCell>
               </TableRow>
             )}
-          </TableBody>{" "}
+          </TableBody>
         </Table>
       </CardContent>
     </Card>

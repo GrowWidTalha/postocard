@@ -14,7 +14,6 @@ const LoginButton = ({children, mode = "redirect", asChild}: Props) => {
         router.push("/auth/login")
     }
 
-    // TODO: Implement Modal
   return (
     <span onClick={onClick} className='cursor-pointer'>
         {children}

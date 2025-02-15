@@ -121,7 +121,7 @@ const DesignsFilters = () => {
                     </SelectTrigger>
                     <SelectContent>
                         {users?.map((user) => (
-                            <SelectItem value={user.id}>{user.name}</SelectItem>
+                            <SelectItem key={user.id} value={user.id}>{user.name}</SelectItem>
                         ))}
                     </SelectContent>
                 </Select>

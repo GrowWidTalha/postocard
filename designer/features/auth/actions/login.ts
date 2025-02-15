@@ -14,6 +14,7 @@ import {
 import { sendTwoFactorEmail, sendVerificationEmail } from "../lib/mail";
 import { db } from "@/db";
 import { getTwoFactorConfirmationByUserId } from "../data/two-factor-confirmation";
+import { compare } from "bcryptjs"; // Import compare function from bcryptjs
 export const login = async (values: z.infer<typeof LoginSchema>) => {
   const validatedFields = LoginSchema.safeParse(values);
   if (!validatedFields.success) {
@@ -25,20 +26,27 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
   if (!existingUser || !existingUser.email || !existingUser.password) {
     return { error: "Email doesn't exist" };
   }
-    if (!existingUser.emailVerified) {
-      const verificationToken = await generateVerificationToken(
-        existingUser.email
-      );
-      await sendVerificationEmail(
-        verificationToken.email,
-        verificationToken.token
-      );
-      return { success: "Confirmation email sent" };
-    }
 
-  const isDesigner = existingUser.role === "DESIGNER";
+  // Verify password
+  const isPasswordValid = await compare(password, existingUser.password);
+  if (!isPasswordValid) {
+    return { error: "Invalid Credentials" };
+  }
 
-  if(!isDesigner) {
+  if (!existingUser.emailVerified) {
+    const verificationToken = await generateVerificationToken(
+      existingUser.email
+    );
+    await sendVerificationEmail(
+      verificationToken.email,
+      verificationToken.token
+    );
+    return { success: "Confirmation email sent" };
+  }
+
+  const isAdmin = existingUser.role === "DESIGNER";
+
+  if(!isAdmin) {
     return { error: "Only designers can access this dashboard!"}
   }
 
@@ -86,7 +94,8 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
     });
     return { success: "success" };
   } catch (error: any) {
-    if (error instanceof AuthError) {
+      console.log(error)
+    if (error instanceof AuthError){
       switch (error.type) {
         case "CredentialsSignin":
           return { error: "Invalid Credentials" };
