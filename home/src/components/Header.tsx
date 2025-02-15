@@ -1,5 +1,4 @@
-import { Heart, Search, ShoppingCart } from "lucide-react";
-import { User } from "lucide-react";
+import { ShoppingCart, Menu, X } from "lucide-react";
 import React from "react";
 import { Button } from "./ui/button";
 import {
@@ -9,55 +8,97 @@ import {
   SheetHeader,
   SheetTitle,
 } from "./ui/sheet";
-import { Menu } from "lucide-react";
-import { FaUsers } from "react-icons/fa";
 import Link from "next/link";
 
 export const Navbar = () => {
   return (
-    <nav className="w-full border-b-2 border-gray-300 p-4  ">
-      <div className="max-w-7xl mx-auto w-full  flex justify-between ">
-        <div className="flex items-center gap-2 ">
+    <nav className="w-full border-b border-gray-200 bg-white shadow-sm">
+      <div className="max-w-7xl mx-auto w-full flex justify-between items-center p-4">
+        {/* Logo and Title */}
+        <div className="flex items-center gap-2">
           <Link href="/">
-            <img src="4.jpg" alt="alt" width={50} height={70} className="w-[50px] h-[32px] md:w-[60px] md:h-[40px] cursor-pointer"/>
+            <img
+              src="4.jpg"
+              alt="alt"
+              className="w-[40px] h-[40px] cursor-pointer"
+            />
           </Link>
-          <h1 className="text-3xl font-bold text-yellow-500">
-            Posto Card
-          </h1>
+          <h1 className="text-4xl font-bold text-yellow-500 font-serif" >PostoCard</h1>
         </div>
-        <div className="gap-x-24 hidden md:flex items-center justify-center mx-auto ">
-          <a href={"/"} className="text-md font-normal">
+
+        {/* Desktop Menu */}
+        <div className="hidden md:flex gap-8 items-center">
+          <Link
+            href="/"
+            className="text-gray-800 hover:text-yellow-500 text-lg transition duration-300 font-serif"
+          >
             Home
-          </a>
-          <a href={"/Cards"} className="text-md font-normal flex items-center">
+          </Link>
+          <Link
+            href="/Cards"
+            className="text-gray-800 hover:text-yellow-500 text-lg transition duration-300 font-serif"
+          >
             Cards
-          </a>
-          <a href={"/blog"} className="text-md font-normal">
+          </Link>
+          <Link
+            href="/blog"
+            className="text-gray-800 hover:text-yellow-500 text-lg transition duration-300 font-serif"
+          >
             Blog
-          </a>
-          <a href={"/contact"} className="text-md font-normal">
-            Contact
-          </a>
-        </div>
-        <div className=" gap-4 hidden md:flex">
-          <div className="p-2 gap-2 flex ">
-            {/* <span>
-              <User />
-            </span> */}
-          </div>
-          {/* <Button variant={"outline"} size={"icon"} className="rounded-full">
-            <Heart />
+          </Link>
+          <Button variant={"ghost"} size={"icon"}>
+            <ShoppingCart className="text-black" />
           </Button>
-          <Button variant={"outline"} size={"icon"} className="rounded-full">
-            <ShoppingCart />
-          </Button>
-          <Button variant={"outline"} size={"icon"} className="rounded-full">
-            <Search />
-          </Button> */}
         </div>
-        {/* / */}
+
+        {/* Mobile Menu & Cart Icons */}
+        <div className="flex items-center gap-2 md:hidden">
+          <Button variant={"ghost"} size={"icon"}>
+            <ShoppingCart className="text-black" />
+          </Button>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant={"ghost"} size={"icon"}>
+                <Menu className="text-black" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent
+              side="right"
+              className="w-[70%] bg-white shadow-lg"
+            >
+              <div className="p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <SheetTitle className="text-3xl font-bold text-gray-800 font-serif">
+                    Menu
+                  </SheetTitle>
+                </div>
+                <nav className="flex flex-col gap-4">
+                  <Link
+                    href="/"
+                    className="text-gray-800 hover:text-yellow-500 text-lg transition duration-300 font-serif"
+                  >
+                    Home
+                  </Link>
+                  <Link
+                    href="/Cards"
+                    className="text-gray-800 hover:text-yellow-500 text-lg transition duration-300 font-serif"
+                  >
+                    Cards
+                  </Link>
+                  <Link
+                    href="/blog"
+                    className="text-gray-800 hover:text-yellow-500 text-lg transition duration-300 font-serif"
+                  >
+                    Blog
+                  </Link>
+                </nav>
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
     </nav>
   );
 };
+
 export default Navbar;

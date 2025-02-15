@@ -8,7 +8,7 @@ const page = () => {
     <div>
       <Hero/>
       <Middle/>
-      <img src="/banner.webp" alt="banner" />
+    
     </div>
   )
 }

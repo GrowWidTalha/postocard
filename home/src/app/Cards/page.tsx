@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 interface User {
   title: string;
   description: string;
-  imageUrl: string;
+  imageurl: string;
   CreatedAt: string;
   id: number;
 }
@@ -28,20 +28,20 @@ const Page = () => {
   }, []);
 
   return (
-    <div className="p-4 sm:p-8">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div className="p-2 xs:p-4 sm:p-8 bg-gray-100 sm:w-6/7 sm:h-10/12">
+      <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-4 lg:grid-cols-3 gap-8 xs:gap-6 sm:gap-8 lg:gap-10">
         {cards.map((card) => (
           <div key={card.id} className="bg-white rounded-lg shadow-lg overflow-hidden">
             <Link href={`/Cards/${card.id}`} legacyBehavior>
-            <img
-              className="w-full h-48 object-cover"
-              src={card.imageUrl || 'https://via.placeholder.com/150'}
-              alt={card.title || 'Card image'}
-            />
+              <img
+                className="w-full h-32 xs:h-40 sm:h-48 object-cover"
+                src={card.imageurl || 'https://via.placeholder.com/150'}
+                alt={card.title || 'Card image'}
+              />
             </Link>
-            <div className="p-4">
-              <h3 className="text-xl font-semibold text-gray-800">{card.title}</h3>
-              <p className="text-gray-600 text-sm">{card.CreatedAt}</p>
+            <div className="p-2 xs:p-3 sm:p-4">
+              <h3 className="text-lg xs:text-xl font-semibold text-gray-800">{card.title}</h3>
+              <p className="text-gray-600 text-xs xs:text-sm">{card.CreatedAt}</p>
             </div>
           </div>
         ))}
@@ -51,3 +51,4 @@ const Page = () => {
 };
 
 export default Page;
+
