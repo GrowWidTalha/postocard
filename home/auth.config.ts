@@ -3,8 +3,8 @@ import Credentials from "next-auth/providers/credentials";
 import Github from "next-auth/providers/github"
 import Google from "next-auth/providers/google"
 import bcrypt from "bcryptjs";
-import { LoginSchema } from "./features/auth/schemas";
-import { getUserByEmail } from "./features/auth/data/user";
+import { LoginSchema } from "./src/features/auth/schemas";
+import { getUserByEmail } from "./src/features/auth/data/user";
 export default {
   providers: [
     Github({

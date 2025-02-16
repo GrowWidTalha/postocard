@@ -26,7 +26,10 @@ const SIDEBAR_ITEMS: SidebarCategory[] = [
 //   },
   {
     category: "Products",
-    items: [{ href: "/designs", icon: PackageOpen, text: "Designs" }],
+    items: [
+      { href: "/categories", icon: PackageOpen, text: "Categories" },
+      { href: "/designs", icon: PackageOpen, text: "Designs" },
+    ],
   },
   {
     category: "Orders",
