@@ -12,7 +12,7 @@ const Mid = () => {
           <h1 className='text-3xl sm:text-5xl md:text-5xl lg:text-4xl xl:text-5xl font-bold text-black uppercase font-serif mb-4'>
             PostoCard Personalized Greeting Card App
           </h1>
-          
+
           <p className='text-lg sm:text-xl md:text-2xl font-serif text-black mb-6'>
             A Thoughtful Touch for Every Occasion
           </p>
@@ -22,9 +22,9 @@ const Mid = () => {
           </p>
 
           <div className='flex justify-center lg:justify-start'>
-            <Link href={'/Cards'}>
-            <Button 
-              size="lg" 
+            <Link href={'/cards'}>
+            <Button
+              size="lg"
               className='bg-pink-600 hover:bg-pink-400 font-serif w-full sm:w-auto px-8 py-4 text-lg'
             >
               View Cards

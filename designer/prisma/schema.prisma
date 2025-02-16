@@ -147,6 +147,8 @@ model DesignCategory {
     designType    DesignType
     designs       Design[]
     subCategories SubCategory[]
+    thumbnailUrl  String?
+    thumbnailUploadId String?
 }
 
 model SubCategory {
@@ -155,6 +157,8 @@ model SubCategory {
     designCategoryId String
     designCategory   DesignCategory @relation(fields: [designCategoryId], references: [id])
     designs          Design[]
+    thumbnailUrl     String
+    thumbnailUploadId String?
 }
 
 model Order {

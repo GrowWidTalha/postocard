@@ -3,7 +3,7 @@
 import { db } from "@/db";
 import { DesignType } from "@prisma/client";
 
-export const getCategories = async ({ type }: { type: DesignType }) => {
+export const getCategories = async (type: DesignType) => {
   try {
     const res = await db.designCategory.findMany({ where: { designType: type } });
     return {
@@ -62,7 +62,10 @@ export const createSubCategory = async (name: string, id: string, type: DesignTy
 export const getSubCategoriesById = async (id: string) => {
   try {
     const res = await db.subCategory.findMany({
-      where: { designCategoryId: id },
+      where: { designCategoryId: id, },
+      include: {
+        designs: true,
+      },
     });
     return res;
   } catch (error) {

@@ -31,7 +31,7 @@ import {
   getSubCategoriesById,
 } from "../actions/categories.actions";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Design } from "@prisma/client";
+import { Design, DesignType } from "@prisma/client";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { UploadDropzone } from "@/lib/uploadthing";
 
@@ -117,7 +117,7 @@ export const DesignForm: React.FC<FormProps> = ({ type, design }) => {
     refetchOnWindowFocus: false,
     queryKey: ["categories"],
     queryFn: async () => {
-      const res = await getCategories({ type: form.getValues("type") });
+      const res = await getCategories(form.getValues("type") as DesignType);
       return res.data;
     },
   });
@@ -214,7 +214,7 @@ export const DesignForm: React.FC<FormProps> = ({ type, design }) => {
                   endpoint={"imageUploader"}
                   onClientUploadComplete={(url) => {
                     form.setValue("pdfLink", url[0]?.url!);
-                    form.setValue("pdfUploadId", url[0].key)
+                    form.setValue("pdfUploadId", url[0].key);
                   }}
                 />
               </FormControl>

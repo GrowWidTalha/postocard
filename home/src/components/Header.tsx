@@ -35,7 +35,7 @@ export const Navbar = () => {
             Home
           </Link>
           <Link
-            href="/Cards"
+            href="/cards"
             className="text-gray-800 hover:text-yellow-500 text-lg transition duration-300 font-serif"
           >
             Cards
@@ -80,7 +80,7 @@ export const Navbar = () => {
                     Home
                   </Link>
                   <Link
-                    href="/Cards"
+                    href="/cards"
                     className="text-gray-800 hover:text-yellow-500 text-lg transition duration-300 font-serif"
                   >
                     Cards

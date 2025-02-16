@@ -8,7 +8,15 @@
  */
 export const publicRoutes = [
     "/auth/new-verification",
-    "/api/hono"
+    "/api/hono",
+    "/",
+    "/cards",
+    "/blog",
+    "/contact",
+    "/faq",
+    "/privacypolicy",
+    "/shippingpolicy",
+    "/returnpolicy"
 ]
 
 /**
