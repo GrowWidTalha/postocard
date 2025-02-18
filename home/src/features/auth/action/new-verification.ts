@@ -1,7 +1,7 @@
 "use server"
 
 
-import { db } from "../../../../db"
+import { db } from "../../../db"
 import { getUserByEmail } from "../data/user"
 import { getVerificationTokenByToken } from "../data/verification-token"
 

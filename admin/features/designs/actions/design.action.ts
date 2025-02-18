@@ -4,10 +4,7 @@ import { currentUser } from "@/features/auth/lib/auth";
 import { Design, DesignType } from "@prisma/client";
 import { z } from "zod";
 
-type UpdateDesignInput = Omit<
-  Design,
-  // "id" | "createdAt" | "updatedAt" | "userId"
->;
+type UpdateDesignInput = Design
 
 export async function updateDesign(id: string, data: UpdateDesignInput) {
   try {

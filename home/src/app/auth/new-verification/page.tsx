@@ -1,5 +1,5 @@
 import React from 'react'
-import NewVerificationForm from '../../../../features/auth/components/new-verification-form'
+import NewVerificationForm from '@/features/auth/components/new-verification-form'
 
 const NewVerificationPage = () => {
   return (

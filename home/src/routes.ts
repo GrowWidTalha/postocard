@@ -11,6 +11,8 @@ export const publicRoutes = [
     "/api/hono",
     "/",
     "/cards",
+    "/cards/*", // Matches any route starting with /cards/
+    "/design",
     "/blog",
     "/contact",
     "/faq",
@@ -25,7 +27,6 @@ export const publicRoutes = [
 */
 export const authRoutes = [
     "/auth/login",
-
 ]
 
 /**

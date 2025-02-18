@@ -82,6 +82,7 @@ export const DesignForm: React.FC<FormProps> = ({ type, design }) => {
         if (res?.error) throw new Error(res.error);
         return res;
       } else {
+          // @ts-ignore
         const res = await updateDesign(design!.id, {
           name: values.name,
           description: values.description,

@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { getBlogById } from "@/features/blogs/actions/blogs.actions";
 import UpdateBlogForm from "@/features/blogs/components/update-blog-form";
 import { getDesignById } from "@/features/designs/actions/design.action";
-import DesignForm from "@/features/designs/components/createDesignForm";
+import {DesignForm} from "@/features/designs/components/createDesignForm";
 import React from "react";
 
 const CreateBlogPage = async({params}: { params: Promise<{ designId: string }> }) => {

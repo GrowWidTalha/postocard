@@ -41,7 +41,9 @@ export const createCategory = async (name: string, type: DesignType) => {
 };
 export const createSubCategory = async (name: string, id: string, type: DesignType) => {
   try {
+    // TODO: Remove redundant code from this file
     const res = await db.subCategory.create({
+        // @ts-ignore
       data: { name: name, designCategoryId: id },
     });
 

@@ -18,7 +18,7 @@ export const Navbar = () => {
         <div className="flex items-center gap-2">
           <Link href="/">
             <img
-              src="4.jpg"
+              src="/4.jpg"
               alt="alt"
               className="w-[40px] h-[40px] cursor-pointer"
             />

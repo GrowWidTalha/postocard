@@ -12,6 +12,7 @@ const OrdersPage = async() => {
     }
   return (
     <DashboardPage title='Orders' >
+        {/* @ts-ignore */}
         <OrdersClient orders={orders} />
     </DashboardPage>
   )

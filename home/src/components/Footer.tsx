@@ -7,7 +7,7 @@ const Footer: React.FC = () => {
             <div className="flex flex-wrap justify-between gap-6">
                 {/* Company Info */}
                 <section className="w-[14rem]">
-                    <img src="4.jpg" alt="alt" height={70} width={50} />
+                    <img src="/4.jpg" alt="alt" height={70} width={50} />
                     <h2 className="font-bold text-3xl text-yellow-500 font-serif">PostoCard</h2>
                     <p className="text-gray-700">
                         400 University Drive Suite 200 Coral Gables, FL 33134 USA
@@ -29,7 +29,7 @@ const Footer: React.FC = () => {
                     <h4 className="font-semibold text-lg">Help</h4>
                     <ul className="space-y-2 text-gray-600">
                         <Link href={"/faq"}>
-                            <li>FAQs</li> 
+                            <li>FAQs</li>
                         </Link>
                         <Link href={"/shippingpolicy"}>
                             <li>Shipping Policy</li>

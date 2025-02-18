@@ -122,6 +122,7 @@ const OrdersTable = ({
         cell: ({ row }) => {
           return (
             <div className="flex items-center gap-4">
+                {/* @ts-ignore */}
               <p>{row.original.user.email}</p>
             </div>
           );

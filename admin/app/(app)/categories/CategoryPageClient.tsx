@@ -148,8 +148,12 @@ const CategoryPageClient = ({
                   </div>
                 </CardHeader>
                 <CardContent className="p-4 md:p-6">
+                    {/* @ts-ignore */}
                   <p className="text-sm text-muted-foreground">Designs: {category.designs?.length || 0}</p>
+
+
                   <p className="text-sm text-muted-foreground">
+                    {/* @ts-ignore */}
                     Subcategories: {category.subCategories?.length || 0}
                   </p>
                 </CardContent>

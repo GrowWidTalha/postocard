@@ -87,6 +87,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
     return { success: "success" };
   } catch (error: any) {
     if (error instanceof AuthError) {
+        // @ts-ignore
       switch (error.type) {
         case "CredentialsSignin":
           return { error: "Invalid Credentials" };

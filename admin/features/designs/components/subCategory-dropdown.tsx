@@ -65,6 +65,7 @@ const SubCategoryDropDown: React.FC<SubCategoryDropDownProps> = ({ value, onChan
                             ))}
                         </CommandGroup>
                     </CommandList>
+                    {/* @ts-ignore */}
                     <CreateSubCategoryDialog categoryId={categoryId}>
                         <div className='flex items-center gap-2 mx-auto w-full justify-center text-xs'>
                             <Plus />

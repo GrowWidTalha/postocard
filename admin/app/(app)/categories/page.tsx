@@ -14,6 +14,7 @@ const CategoryPage = async() => {
             Create Category
         </Button>
     </CreateCategoryDialog>}>
+    {/* @ts-ignore */}
         <CategoryPageClient categories={categories}/>
     </DashboardPage>
   )

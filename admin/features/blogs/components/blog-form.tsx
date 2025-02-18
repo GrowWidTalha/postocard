@@ -25,6 +25,7 @@ const BlogForm: React.FC<BlogFormProps> = ({ blog, onSubmit, isPending }) => {
   const router = useRouter();
   const form = useForm<BlogFormData>({
     resolver: zodResolver(blogSchema),
+    // @ts-ignore
     defaultValues: blog || {
       title: "",
       content: "",

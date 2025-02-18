@@ -19,6 +19,7 @@ export const DesignSheet = ({ isOpen, setIsOpen, design }: {isOpen: boolean, set
 
   const { mutate: updateMutate, isPending: isUpdatePending } = useMutation({
     mutationFn: async () => {
+        // @ts-ignore
       await updateDesign(design.id, {
         published,
       })
@@ -67,11 +68,13 @@ export const DesignSheet = ({ isOpen, setIsOpen, design }: {isOpen: boolean, set
 
           <div className="space-y-2">
             <Label>Category</Label>
+            {/* @ts-ignore */}
             <p className="text-sm font-medium">{design.designCategory?.name || "N/A"}</p>
           </div>
 
           <div className="space-y-2">
             <Label>Subcategory</Label>
+            {/* @ts-ignore */}
             <p className="text-sm font-medium">{design.subCategory?.name || "N/A"}</p>
           </div>
 

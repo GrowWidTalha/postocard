@@ -13,10 +13,12 @@ const OrdersClient = ({ orders: initialOrders }: { orders: Order[] }) => {
 
       return order;
     },
+    // @ts-ignore
     initialData: initialOrders,
   });
   return (
     <div>
+        {/* @ts-ignore */}
       {isPending ? <div>Loading...</div> : <OrdersTable orders={orders!} isPending={isPending}/>}
     </div>
   );

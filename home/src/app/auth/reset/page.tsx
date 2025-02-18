@@ -1,5 +1,5 @@
 import React from 'react'
-import ResetForm from '../../../../features/auth/components/reset-form'
+import ResetForm from '@/features/auth/components/reset-form'
 
 const ResetPage = () => {
   return (

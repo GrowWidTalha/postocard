@@ -1,15 +1,15 @@
 import NextAuth from "next-auth";
-import authConfig from "./auth.config";
+import authConfig from "@/auth.config";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 
 //import { getUserById } from "@/features/auth/data/user";
 import { UserRole } from "@prisma/client";
 // import { getAccountByUserId } from "@/features/auth/data/account";
-import { db } from "./db";
+import { db } from "@/db";
 // Helo gusy
-import { getUserById } from "./src/features/auth/data/user";
-import { getTwoFactorConfirmationByUserId } from "./src/features/auth/data/two-factor-confirmation";
-import { getAccountByUserId } from "./src/features/auth/data/account";
+import { getUserById } from "@/features/auth/data/user";
+import { getTwoFactorConfirmationByUserId } from "@/features/auth/data/two-factor-confirmation";
+import { getAccountByUserId } from "@/features/auth/data/account";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {

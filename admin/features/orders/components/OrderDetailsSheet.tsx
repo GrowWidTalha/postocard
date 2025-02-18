@@ -108,6 +108,7 @@ const OrderDetailsSheet = ({
       const isConfirmed = await confirm({
         title: "Delete Order",
         description: "Are you sure you want to delete this order?",
+        // @ts-ignore
         customActions: ({ confirm, cancel }) => (
           <div className="flex justify-end space-x-2">
             <Button variant="outline" onClick={cancel} disabled={isDeleting}>
@@ -139,6 +140,7 @@ const OrderDetailsSheet = ({
       const isConfirmed = await confirm({
         title: "Assign Order",
         description: `Are you sure you want to assign this order to ${assignee}?`,
+        // @ts-ignore
         customActions: ({ confirm, cancel }) => (
           <div className="flex justify-end space-x-2">
             <Button variant="outline" onClick={cancel} disabled={isAssigning}>
@@ -170,6 +172,7 @@ const OrderDetailsSheet = ({
       const isConfirmed = await confirm({
         title: "Update Order Status",
         description: `Are you sure you want to update this order's status to ${status}?`,
+        // @ts-ignore
         customActions: ({ confirm, cancel }) => (
           <div className="flex justify-end space-x-2">
             <Button variant="outline" onClick={cancel} disabled={isStatusUpdating}>

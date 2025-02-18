@@ -1,5 +1,5 @@
 import React from 'react'
-import AuthError from '../../../../features/auth/components/auth-error'
+import AuthError from '@/features/auth/components/auth-error'
 
 const AuthErrorPage = () => {
   return (
