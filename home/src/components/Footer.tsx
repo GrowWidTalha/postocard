@@ -9,9 +9,10 @@ const Footer: React.FC = () => {
                 <section className="w-[14rem]">
                     <img src="/4.jpg" alt="alt" height={70} width={50} />
                     <h2 className="font-bold text-3xl text-yellow-500 font-serif">PostoCard</h2>
-                    <p className="text-gray-700">
-                        400 University Drive Suite 200 Coral Gables, FL 33134 USA
-                    </p>
+                    <p>
+                    Address: 2307 Corry Crest Circle ,Katy, TX-77493 USA</p>
+                    <p>Phone Number:(346) 479 0233</p>
+                    
                 </section>
 
                 {/* Navigation */}
