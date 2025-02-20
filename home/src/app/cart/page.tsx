@@ -1,52 +1,26 @@
 "use client";
 
-
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
-
-interface CartItem {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-  image: string;
-}
+import { useCartStore } from "../../hooks/useCart";
+import { Trash } from "lucide-react";
+import Link from "next/link";
 
 const page = () => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: 1,
-      name: "Happy Valentine's Day",
-      price: 2500,
-      quantity: 1,
-      image: "/1.jpg",
-    },
-  ]);
+  const { items, removeItem, updateQuantity } = useCartStore();
 
   const handleQuantityChange = (
-    id: number,
+    id: string,
     type: "increment" | "decrement"
   ) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id
-          ? {
-              ...item,
-              quantity:   
-                type === "increment"
-                  ? item.quantity + 1
-                  : Math.max(1, item.quantity - 1),
-            }
-          : item
-      )
-    );
+    updateQuantity(id, type === "increment" ? 1 : -1);
   };
 
-  const handleRemoveItem = (id: number) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+  const handleRemoveItem = (id: string) => {
+    removeItem(id);
   };
 
-  const subtotal = cartItems.reduce(
+  const subtotal = items.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0
   );
@@ -69,18 +43,18 @@ const page = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {cartItems.map((item) => (
+                    {items.map((item) => (
                       <tr key={item.id} className="border-b">
                         <td className="p-4 flex items-center space-x-4">
                           <img
-                            src={item.image}
+                            src={item.thumbnailUrl}
                             alt={item.name}
                             className="w-16 h-16 rounded-lg"
                           />
                           <span className="text-gray-700">{item.name}</span>
                         </td>
                         <td className="p-4 text-gray-600">
-                          Rs. {item.price.toLocaleString()}
+                          ${item.price}
                         </td>
                         <td className="p-4">
                           <div className="flex items-center space-x-2 border rounded-lg px-3 py-2">
@@ -106,14 +80,14 @@ const page = () => {
                           </div>
                         </td>
                         <td className="p-4 text-gray-700">
-                          Rs. {(item.price * item.quantity).toLocaleString()}
+                         ${(item.price * item.quantity)}
                         </td>
                         <td className="p-4">
                           <button
                             onClick={() => handleRemoveItem(item.id)}
                             className="text-gray-400 hover:text-red-600"
                           >
-                            🗑️
+                            <Trash />
                           </button>
                         </td>
                       </tr>
@@ -129,15 +103,17 @@ const page = () => {
                 <h2 className="text-xl font-bold mb-4">Cart Totals</h2>
                 <div className="flex justify-between text-gray-600 mb-2">
                   <span>Subtotal</span>
-                  <span>Rs. {subtotal.toLocaleString()}</span>
+                  <span>${subtotal}</span>
                 </div>
                 <div className="flex justify-between text-gray-800 font-bold mb-6">
                   <span>Total</span>
-                  <span>Rs. {subtotal.toLocaleString()}</span>
+                  <span>${subtotal}</span>
                 </div>
-                <button className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800">
+                <Link href={"/checkout"}>
+                <button  className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800">
                   Check Out
                 </button>
+                </Link>
               </div>
             </div>
           </div>
@@ -148,4 +124,3 @@ const page = () => {
 };
 
 export default page;
-

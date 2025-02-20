@@ -14,6 +14,8 @@ export const publicRoutes = [
     "/cards/*", // Matches any route starting with /cards/
     "/design",
     "/blog",
+    "/cart",
+    "/checkout",
     "/contact",
     "/faq",
     "/privacypolicy",
