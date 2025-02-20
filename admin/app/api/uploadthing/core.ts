@@ -8,12 +8,8 @@ export const ourFileRouter = {
     imageUploader: f({
     image: {
       maxFileSize: "4MB",
-      maxFileCount: 5,
+      maxFileCount: 1,
     },
-    pdf: {
-        maxFileCount: 1,
-        maxFileSize: "1024MB",
-    }
   })
     .onUploadComplete(async ({file }) => {
 

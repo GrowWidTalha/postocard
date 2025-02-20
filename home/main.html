@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+  <head>
+    <title>Greeting Card</title>
+    <meta
+      name="GENERATOR"
+      content="Belltech Greeting Cards Designer, www.belltechsystems.com"
+    />
+    <style type="text/css">
+      A {
+        font-family: Verdana, Arial, Helvetica, sans-serif;
+        font-size: 12px;
+        font-weight: normal;
+        color: #003399;
+        text-decoration: none;
+      }
+      A:hover {
+        color: #ffffff;
+      }
+    </style>
+  </head>
+  <body bgcolor="#cccccc">
+    <script language="javascript">
+      var img1 = new Image();
+      img1.src = "bday131.jpg";
+      var img2 = new Image();
+      img2.src = "bday132.jpg";
+      var img3 = new Image();
+      img3.src = "bday133.jpg";
+      var img4 = new Image();
+      img4.src = "bday134.jpg";
+      var iCurr = 1;
+      function GoNext(imgName) {
+        document.links[0].style.visibility = "visible";
+        document.links[1].style.visibility = "visible";
+        iCurr++;
+        if (iCurr > 4) iCurr = 4;
+        document.images[imgName].src = eval("img" + iCurr).src;
+        if (iCurr == 4) document.links[1].style.visibility = "hidden";
+      }
+      function GoBack(imgName) {
+        document.links[0].style.visibility = "visible";
+        document.links[1].style.visibility = "visible";
+        iCurr--;
+        if (iCurr < 1) iCurr = 1;
+        document.images[imgName].src = eval("img" + iCurr).src;
+        if (iCurr == 1) document.links[0].style.visibility = "hidden";
+      }
+    </script>
+    <table border="0" cellpadding="0" cellspacing="0">
+      <tr>
+        <td align="right">
+          <div
+            style="margin: 5 5 0 5; padding: 5 5 5 5; background-color: #cc9933"
+          >
+            &nbsp;&nbsp;<a
+              href="javascript:GoBack('imgShown');"
+              style="visibility: hidden"
+              >&lt; Previous</a
+            >
+            &nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:GoNext('imgShown');"
+              >Next &gt;</a
+            >&nbsp;&nbsp;
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <img
+            src="bday131.jpg"
+            style="border: solid 2 #cc9933"
+            name="imgShown"
+            hspace="5"
+            vspace="5"
+          />
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

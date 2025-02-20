@@ -181,7 +181,7 @@ export const DesignForm: React.FC<FormProps> = ({ type, design }) => {
           name="thumbnailUrl"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Thumbnail Image</FormLabel>
+              <FormLabel>Page 1</FormLabel>
               <FormControl>
                 <UploadDropzone
                   endpoint={"imageUploader"}
@@ -209,7 +209,7 @@ export const DesignForm: React.FC<FormProps> = ({ type, design }) => {
           name="pdfLink"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Design PDF</FormLabel>
+              <FormLabel>Page 2</FormLabel>
               <FormControl>
                 <UploadDropzone
                   endpoint={"imageUploader"}
