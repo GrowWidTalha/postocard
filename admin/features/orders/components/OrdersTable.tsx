@@ -123,7 +123,7 @@ const OrdersTable = ({
           return (
             <div className="flex items-center gap-4">
                 {/* @ts-ignore */}
-              <p>{row.original.user.email}</p>
+              <p>{row.original?.user?.email || row.original?.guestEmail}</p>
             </div>
           );
         },
