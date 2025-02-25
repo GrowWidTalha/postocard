@@ -1,3 +1,5 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import {
   Sheet,
@@ -10,9 +12,9 @@ import {
 } from "@/components/ui/sheet"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useConfirm } from "@omit/react-confirm-dialog"
-import { OrderStatus, PrintStatus, UserRole, type Order } from "@prisma/client"
-import type React from "react"
+import { type OrderStatus, PrintStatus, UserRole, type Order } from "@prisma/client"
 import { useState } from "react"
+import type React from "react"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import {
@@ -24,16 +26,15 @@ import {
   Printer,
   AlertCircle,
   CreditCard,
-  Trash,
-  UserPlus,
   RefreshCw,
   Loader2,
+  Download,
 } from "lucide-react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { getUsersByRole } from "@/features/peoples/actions/people"
-import { Spinner } from "@/components/spinner"
 import { assignOrder, deleteOrder, updateOrderStatus } from "../actions/orders.action"
 import { toast } from "sonner"
+import { jsPDF } from "jspdf"
 
 const OrderDetailsSheet = ({
   children,
@@ -108,6 +109,7 @@ const OrderDetailsSheet = ({
       const isConfirmed = await confirm({
         title: "Delete Order",
         description: "Are you sure you want to delete this order?",
+        // @ts-ignore
         customActions: ({ confirm, cancel }) => (
           <div className="flex justify-end space-x-2">
             <Button variant="outline" onClick={cancel} disabled={isDeleting}>
@@ -139,6 +141,7 @@ const OrderDetailsSheet = ({
       const isConfirmed = await confirm({
         title: "Assign Order",
         description: `Are you sure you want to assign this order to ${assignee}?`,
+        // @ts-ignore
         customActions: ({ confirm, cancel }) => (
           <div className="flex justify-end space-x-2">
             <Button variant="outline" onClick={cancel} disabled={isAssigning}>
@@ -170,6 +173,7 @@ const OrderDetailsSheet = ({
       const isConfirmed = await confirm({
         title: "Update Order Status",
         description: `Are you sure you want to update this order's status to ${status}?`,
+        // @ts-ignore
         customActions: ({ confirm, cancel }) => (
           <div className="flex justify-end space-x-2">
             <Button variant="outline" onClick={cancel} disabled={isStatusUpdating}>
@@ -196,7 +200,70 @@ const OrderDetailsSheet = ({
     }
   }
 
-//   TODO: Add custom design pdf download with custom data generated on client side
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false)
+
+  const loadImage = (src: string, description: string): Promise<HTMLImageElement> => {
+    console.log(src)
+    return new Promise((resolve, reject) => {
+      const img = new Image()
+    //   img.crossOrigin = "anonymous"
+      img.onload = () => resolve(img)
+      img.onerror = (e) => {
+        console.error(`Error loading ${description} image:`, e)
+        reject(new Error(`Failed to load ${description} image`))
+      }
+      img.src = src
+    })
+  }
+
+  const generatePDF = async () => {
+    setIsGeneratingPDF(true)
+    const doc = new jsPDF()
+
+    try {
+      // Page 1: Thumbnail
+      console.log("Loading thumbnail image...")
+    //   @ts-ignore
+      const thumbnailImg = await loadImage(orderDetails.design?.thumbnailUrl!, "thumbnail")
+      doc.addImage(thumbnailImg, "JPEG", 0, 0, 210, 297)
+
+      // Page 2: PDF Link
+      console.log("Loading PDF link image...")
+      doc.addPage()
+    //   @ts-ignore
+      const pdfLinkImg = await loadImage(orderDetails.design?.pdfLink!, "PDF link")
+      doc.addImage(pdfLinkImg, "JPEG", 0, 0, 210, 297)
+
+      // Page 3: Custom Text
+      console.log("Adding custom text page...")
+      doc.addPage()
+      doc.setFillColor(255, 255, 255)
+      doc.rect(0, 0, 210, 297, "F")
+      doc.setFont("helvetica", "italic")
+      doc.setFontSize(20)
+      doc.setTextColor(0, 0, 0)
+      const splitText = doc.splitTextToSize(orderDetails.customMessage || "", 180)
+      doc.text(splitText, 105, 148, { align: "center" })
+
+      // Page 4: Static Image
+      console.log("Loading static image...")
+      doc.addPage()
+      const staticImg = await loadImage("/last-page.jpg", "static")
+      doc.addImage(staticImg, "JPEG", 0, 0, 210, 297)
+
+      // Save the PDF
+      doc.save(`${orderDetails.recipientName}_order.pdf`)
+
+      toast.success("PDF generated and downloaded successfully.")
+    } catch (error) {
+      console.error("Error generating PDF:", error)
+    //   @ts-ignore
+      toast.error(`Failed to generate PDF: ${error.message}`)
+    } finally {
+      setIsGeneratingPDF(false)
+    }
+  }
+
   return (
     <Sheet>
       <SheetTrigger asChild>{children}</SheetTrigger>
@@ -296,6 +363,19 @@ const OrderDetailsSheet = ({
                 <RefreshCw className="mr-2 h-4 w-4" />
               )}
               {isStatusUpdating ? "Updating..." : "Update Status"}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={generatePDF}
+              className="w-full sm:w-auto ml-2"
+              disabled={isGeneratingPDF}
+            >
+              {isGeneratingPDF ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Download className="mr-2 h-4 w-4" />
+              )}
+              {isGeneratingPDF ? "Generating..." : "Generate PDF"}
             </Button>
           </div>
         </SheetFooter>

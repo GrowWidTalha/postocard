@@ -4,7 +4,7 @@ import { OrderStatus, PrintStatus } from "@prisma/client";
 
 export const getAllOrders = async () => {
     try {
-      const data = await db.order.findMany({ include: { user: true } });
+      const data = await db.order.findMany({ include: { user: true, design: true     } });
       console.log("Running this functon")
       return  data
     } catch (error: any) {

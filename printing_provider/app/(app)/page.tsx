@@ -5,7 +5,7 @@ import React from "react";
 
 const Dashboard = () => {
 
-    // return redirect("/")
+    return redirect("/")
   return (
     <div>
       <DashboardPage title="Dashboard Page" hideBackButton>

@@ -91,7 +91,8 @@ const OrdersTable = ({
         cell: ({ row }) => {
           return (
             <div className="flex items-center gap-4">
-              <p>{row.original.user.email}</p>
+                {/* @ts-ignore */}
+              <p>{row.original?.user?.email || row.original?.guestEmail}</p>
             </div>
           );
         },

@@ -20,10 +20,10 @@ interface SidebarCategory {
 }
 
 const SIDEBAR_ITEMS: SidebarCategory[] = [
-  {
-    category: "Overview",
-    items: [{ href: "/", icon: Home, text: "Dashboard" }],
-  },
+//   {
+//     category: "Overview",
+//     items: [{ href: "/", icon: Home, text: "Dashboard" }],
+//   },
   {
     category: "Orders",
     items: [{ href: "/orders", icon: PackageOpen, text: "Orders" }],
