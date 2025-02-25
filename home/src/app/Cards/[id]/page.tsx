@@ -53,7 +53,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
                   key={card.id}
                   className="bg-white rounded-lg shadow-lg overflow-hidden"
                 >
-                  <Link href={`/cards/${id}/${card.name.replace(" ", "-")}`} legacyBehavior>
+                  <Link href={`/Cards/${id}/${card.name.replace(" ", "-")}`} legacyBehavior>
                     <img
                       className="w-full h-32 xs:h-40 sm:h-48 object-cover"
                       src={card.thumbnailUrl || "https://via.placeholder.com/150"}

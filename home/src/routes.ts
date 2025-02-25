@@ -10,8 +10,8 @@ export const publicRoutes = [
     "/auth/new-verification",
     "/api/hono",
     "/",
-    "/cards",
-    "/cards/*", // Matches any route starting with /cards/
+    "/Cards",
+    "/Cards/*", // Matches any route starting with /Cards/
     "/design",
     "/blog",
     "/cart",

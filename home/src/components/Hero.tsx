@@ -22,7 +22,7 @@ const Mid = () => {
           </p>
 
           <div className='flex justify-center lg:justify-start'>
-            <Link href={'/cards'}>
+            <Link href={'/Cards'}>
             <Button
               size="lg"
               className='bg-pink-600 hover:bg-pink-400 font-serif w-full sm:w-auto px-8 py-4 text-lg'

@@ -1,9 +1,7 @@
 "use client";
-import { Key } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { getAllCategories } from "../../features/designs/actions/designs.actions";
-import { DesignCategory } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import { FaSpinner } from "react-icons/fa";
 import Image from "next/image";
@@ -28,7 +26,7 @@ const Page = () => {
                     key={card.id}
                     className="bg-white rounded-lg shadow-lg overflow-hidden"
                   >
-                    <Link href={`/cards/${card.name.replace(" ", "-")}`}>
+                    <Link href={`/Cards/${card.name.replace(" ", "-")}`}>
                       <img
                         className="w-full h-32 xs:h-40 sm:h-48 object-cover"
                         src={card.thumbnailUrl || "https://via.placeholder.com/150"}
