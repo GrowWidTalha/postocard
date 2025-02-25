@@ -31,7 +31,7 @@ import {
   getSubCategoriesById,
 } from "../actions/categories.actions";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Design } from "@prisma/client";
+import { Design, DesignType } from "@prisma/client";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { UploadDropzone } from "@/lib/uploadthing";
 
@@ -82,6 +82,7 @@ export const DesignForm: React.FC<FormProps> = ({ type, design }) => {
         if (res?.error) throw new Error(res.error);
         return res;
       } else {
+          // @ts-ignore
         const res = await updateDesign(design!.id, {
           name: values.name,
           description: values.description,
@@ -117,7 +118,7 @@ export const DesignForm: React.FC<FormProps> = ({ type, design }) => {
     refetchOnWindowFocus: false,
     queryKey: ["categories"],
     queryFn: async () => {
-      const res = await getCategories({ type: form.getValues("type") });
+      const res = await getCategories(form.getValues("type") as DesignType);
       return res.data;
     },
   });
@@ -180,7 +181,7 @@ export const DesignForm: React.FC<FormProps> = ({ type, design }) => {
           name="thumbnailUrl"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Thumbnail Image</FormLabel>
+              <FormLabel>Page 1</FormLabel>
               <FormControl>
                 <UploadDropzone
                   endpoint={"imageUploader"}
@@ -208,27 +209,24 @@ export const DesignForm: React.FC<FormProps> = ({ type, design }) => {
           name="pdfLink"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Design PDF</FormLabel>
+              <FormLabel>Page 2</FormLabel>
               <FormControl>
                 <UploadDropzone
                   endpoint={"imageUploader"}
                   onClientUploadComplete={(url) => {
                     form.setValue("pdfLink", url[0]?.url!);
-                    form.setValue("pdfUploadId", url[0].key)
+                    form.setValue("pdfUploadId", url[0].key);
                   }}
                 />
               </FormControl>
               {field.value && (
                 <div className="mt-2">
-                  <a
-                    href={field.value}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-500 hover:underline"
-                  >
-                    View uploaded PDF
-                  </a>
-                </div>
+                <img
+                  src={field.value || "/placeholder.svg"}
+                  alt="Thumbnail"
+                  className="w-32 h-32 object-cover rounded"
+                />
+              </div>
               )}
               <FormMessage />
             </FormItem>

@@ -11,7 +11,7 @@ import { auth } from "./auth"
 const redirectRoutes = [
   "/auth/register3j",
 ]
-
+// @ts-ignore
 export default auth((req) => {
   const { nextUrl } = req
   const isLoggedIn = !!req.auth

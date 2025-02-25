@@ -11,13 +11,23 @@ import React, { useState, useCallback, useEffect } from 'react'
 import { DesignStatus } from '@prisma/client'
 import { useDebounce } from '@/hooks/useDebounce'
 import { useQuery } from '@tanstack/react-query'
+import { getUsersByRole } from '@/features/peoples/actions/people'
 
 const DesignsFilters = () => {
     const router = useRouter()
     const searchParams = useSearchParams()
 
+    const { data: users } = useQuery({
+        queryKey: ["designers"],
+        queryFn: async () => {
+            const res = await getUsersByRole("DESIGNER")
+            return res
+        }
+    })
+
     const [query, setQuery] = useState(() => searchParams.get('q') || '')
     const [status, setStatus] = useState(() => searchParams.get('status') || '')
+    const [designer, setDesigner] = useState("")
     const [category, setCategory] = useState(() => searchParams.get('category') || '')
 
     const debouncedQuery = useDebounce(query, 300)
@@ -39,12 +49,17 @@ const DesignsFilters = () => {
         } else {
             params.delete('category')
         }
+        if(designer){
+            params.set("designer", designer)
+        } else {
+            params.delete("designer")
+        }
         router.push(`?${params.toString()}`, { scroll: false })
-    }, [debouncedQuery, status, category, router, searchParams,])
+    }, [debouncedQuery, status, category, router, searchParams, designer])
 
     useEffect(() => {
         updateSearchParams()
-    }, [debouncedQuery, status, category, updateSearchParams,])
+    }, [debouncedQuery, status, category, updateSearchParams, designer])
 
     return (
         <div className="flex flex-col sm:flex-row gap-4 items-end">
@@ -92,6 +107,22 @@ const DesignsFilters = () => {
                         <SelectItem value="brochure">Brochure</SelectItem>
                         <SelectItem value="flyer">Flyer</SelectItem>
                         <SelectItem value="poster">Poster</SelectItem>
+                    </SelectContent>
+                </Select>
+            </div>
+            <div>
+                <label htmlFor="designer" className="text-sm font-medium mb-2 block">
+                    {/* TODO: fix the categories */}
+                    Designer
+                </label>
+                <Select value={designer || ""} onValueChange={setDesigner}>
+                    <SelectTrigger id="designer" className="w-[180px] bg-background">
+                        <SelectValue placeholder="Select Designer" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {users?.map((user) => (
+                            <SelectItem key={user.id} value={user.id}>{user.name}</SelectItem>
+                        ))}
                     </SelectContent>
                 </Select>
             </div>

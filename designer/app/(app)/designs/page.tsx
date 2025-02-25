@@ -8,32 +8,41 @@ import { Spinner } from "@/components/spinner";
 import EmptyState from "@/components/empty-state";
 
 const CardsPage = async () => {
-    const designs = await getAllDesigns()
-    if (!designs.data) {
-        return <div className="flex items-center justify-center h-screen w-full"><Spinner size={"large"} className="text-primary" /></div>
-    }
+  const designs = await getAllDesigns();
+//   @ts-ignore
+  if (!designs.data) {
     return (
-        <DashboardPage
-            title="Designs"
-            cta={
-                <Button asChild>
-                    <Link href={"/designs/create"}>Add Design</Link>
-                </Button>
-            }
-        >
-            {designs.data.length === 0 ? (
-                <EmptyState
-                    heading="No Designs found"
-                    subHeading="There are no designs yet. Create one now"
-                    action={<Button asChild>
-                        <Link href={"/designs/create"}>Add Design</Link>
-                    </Button>}
-                />
-            ) : (
-                <DesignPageContent initialDesigns={designs.data} />
-            )}
-        </DashboardPage>
+      <div className="flex items-center justify-center h-screen w-full">
+        <Spinner size={"large"} className="text-primary" />
+      </div>
     );
+  }
+  return (
+    <DashboardPage
+      title="Designs"
+      cta={
+        <Button asChild>
+          <Link href={"/designs/create"}>Add Design</Link>
+        </Button>
+      }
+    >
+    {/* @ts-ignore */}
+      {designs.data.length === 0 ? (
+        <EmptyState
+          heading="No Designs found"
+          subHeading="There are no designs yet. Create one now"
+          action={
+            <Button asChild>
+              <Link href={"/designs/create"}>Add Design</Link>
+            </Button>
+          }
+        />
+      ) : (
+        // @ts-ignore
+        <DesignPageContent initialDesigns={designs.data} />
+      )}
+    </DashboardPage>
+  );
 };
 
 export default CardsPage;

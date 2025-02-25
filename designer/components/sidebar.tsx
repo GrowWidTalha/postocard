@@ -1,4 +1,14 @@
-import { Home, type LucideIcon, ShoppingBag, PackageOpen, Settings, BookA, Printer, PaintRoller, LogOutIcon } from 'lucide-react';
+import {
+  Home,
+  type LucideIcon,
+  ShoppingBag,
+  PackageOpen,
+  Settings,
+  BookA,
+  Printer,
+  PaintRoller,
+  LogOutIcon,
+} from "lucide-react";
 import { PinTopIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { Button, buttonVariants } from "./ui/button";
@@ -20,19 +30,20 @@ interface SidebarCategory {
 }
 
 const SIDEBAR_ITEMS: SidebarCategory[] = [
-//   {
-//     category: "Overview",
-//     items: [{ href: "/", icon: Home, text: "Dashboard" }],
-//   },
+  //   {
+  //     category: "Overview",
+  //     items: [{ href: "/", icon: Home, text: "Dashboard" }],
+  //   },
   {
     category: "Products",
-    items: [{ href: "/designs", icon: PackageOpen, text: "Designs" }],
+    items: [
+      { href: "/categories", icon: PackageOpen, text: "Categories" },
+      { href: "/designs", icon: PackageOpen, text: "Designs" },
+    ],
   },
   {
     category: "Profile",
-    items: [
-      { href: "/settings", icon: Settings, text: "Settings" },
-    ],
+    items: [{ href: "/settings", icon: Settings, text: "Settings" }],
   },
 ];
 
@@ -46,7 +57,7 @@ export const Sidebar = ({ onClose }: { onClose?: () => void }) => {
   return (
     <div className="flex flex-col w-full h-full max-h-screen">
       <div className="flex-shrink-0 p-4 border-b hidden sm:block text-lg/7 font-semibold text-brand-900">
-          Posto Card
+        Posto Card
       </div>
 
       <div className="flex-grow overflow-y-auto py-4 px-2">

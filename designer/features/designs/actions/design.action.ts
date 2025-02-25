@@ -1,13 +1,10 @@
 "use server";
 import { db } from "@/db";
 import { currentUser } from "@/features/auth/lib/auth";
-import { Design, DesignType, UserRole } from "@prisma/client";
+import { Design, DesignType } from "@prisma/client";
 import { z } from "zod";
 
-type UpdateDesignInput = Omit<
-  Design
-  // "id" | "createdAt" | "updatedAt" | "userId"
->;
+type UpdateDesignInput = Design
 
 export async function updateDesign(id: string, data: UpdateDesignInput) {
   try {
@@ -105,11 +102,11 @@ export const deleteDesign = async (id: string) => {
 export const getAllDesigns = async () => {
   try {
     const user = await currentUser()
-    if(!user) return { error: "Please login first"}
+    if(!user) return;
     const designs = await db.design.findMany({
+        where: { userId: user.id },
       include: { user: true, designCategory: true, subCategory: true },
-      where: { userId: user.id}
-    }, );
+    });
     return {
       data: designs,
       error: null,

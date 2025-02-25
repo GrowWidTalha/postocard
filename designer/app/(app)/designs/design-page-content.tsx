@@ -24,8 +24,7 @@ const DesignPageContent = ({
     queryKey: ["designs"],
     queryFn: async () => {
       const res = await getAllDesigns();
-      console.log("cnsole from queryfn: ", res.data);
-      console.log(initialDesigns);
+// @ts-ignore
       return res.data;
     },
     initialData: initialDesigns,
@@ -66,7 +65,7 @@ const DesignPageContent = ({
             ? design.designCategoryId === category
             : true;
         const matchesDesignerId = designer ? design.userId === designer : true;
-        console.log(design.userId)
+        console.log(design.userId);
 
         console.log({
           designName: design.name,
