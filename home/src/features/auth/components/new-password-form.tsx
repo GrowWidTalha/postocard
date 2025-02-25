@@ -19,7 +19,7 @@ import FormSuccess from "./form-success";
 import { useMutation } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { NewPasswordSchema } from "../schemas";
-
+import { newPassword } from "../action/new-password"
 const NewPasswordForm = () => {
     const searchParams = useSearchParams()
     const token = searchParams.get("token")

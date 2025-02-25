@@ -2,7 +2,7 @@ import paypal from "@paypal/checkout-server-sdk";
 import client from "@/utils/paypalClient";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
   const PaypalClient = client;
   //This code is lifted from https://github.com/paypal/Checkout-NodeJS-SDK
   const { price } = await req.json(); // ✅ Extract orderID correctly

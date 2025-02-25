@@ -9,7 +9,7 @@ const redirectRoutes = [
   "/auth/error",
   "/auth/new-password",
 ]
-
+// @ts-ignore
 export default auth((req) => {
   const { nextUrl } = req
   const isLoggedIn = !!req.auth
