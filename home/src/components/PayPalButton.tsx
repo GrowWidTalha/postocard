@@ -3,10 +3,9 @@
 
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 
-const PayPalButton = ({price, disabled}: {price: string, disabled: boolean}) => (
+const PayPalButton = ({price, onSuccess}: {price: string, disabled: boolean, onSuccess: (values: any) => Promise<void>}) => (
   <PayPalScriptProvider options={{ clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID! }}>
     <PayPalButtons
-    disabled={disabled}
       createOrder={async () => {
         const res = await fetch('/api/paypal/createOrder', { method: 'POST', body: JSON.stringify({ price:price }) });
         const data = await res.json();
@@ -22,7 +21,9 @@ const PayPalButton = ({price, disabled}: {price: string, disabled: boolean}) => 
         });
         const details = await res.json();
         console.log(details)
-        alert('Transaction completed!');
+        if(details.success){
+            onSuccess(details?.data?.id)
+        }
       }}
     />
   </PayPalScriptProvider>
