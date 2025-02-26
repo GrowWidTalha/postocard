@@ -1,15 +1,13 @@
-import authConfig from "@/auth.config"
-import NextAuth from "next-auth"
 import {
   DEFAULT_LOGIN_REDIRECT,
   apiAuthPrefix,
   authRoutes,
   publicRoutes,
 } from "@/routes"
-import { auth } from "./auth"
+import { auth } from "@/auth"
 
 const redirectRoutes = [
-  "/auth/register3j",
+  "/auth/register",
 ]
 // @ts-ignore
 export default auth((req) => {

@@ -21,6 +21,7 @@ export async function updateDesign(id: string, data: UpdateDesignInput) {
         thumbnailUploadId: data.thumbnailUploadId, // NEW: UploadThing thumbnail file ID
         designType: data.designType,
         published: data.published,
+        status: data.status
       },
     });
 
