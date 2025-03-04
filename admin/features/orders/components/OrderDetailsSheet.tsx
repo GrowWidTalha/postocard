@@ -202,7 +202,7 @@ const OrderDetailsSheet = ({
   return (
     <Sheet>
       <SheetTrigger asChild>{children}</SheetTrigger>
-      <SheetContent className="sm:max-w-[500px]">
+      <SheetContent className="sm:max-w-[500px] overflow-y-auto">
         <SheetHeader>
           <SheetTitle className="text-2xl">{orderDetails.recipientName}'s Order</SheetTitle>
           <SheetDescription className="flex items-center text-base">

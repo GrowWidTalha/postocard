@@ -72,7 +72,7 @@ async function main() {
       {
         userId,
         designType: "HOLIDAY",
-        status: "DISABLED",
+        status: "REJECTED",
         name: "Christmas Greeting",
         description: "Festive Christmas greeting design.",
         pdfLink: "https://example.com/christmas-greeting.pdf",

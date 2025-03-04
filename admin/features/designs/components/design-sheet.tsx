@@ -94,16 +94,16 @@ export const DesignSheet = ({
 
           <div className="space-y-2">
             <Label>Category</Label>
-            {/* @ts-ignore */}
             <p className="text-sm font-medium">
+              {/* @ts-ignore */}
               {design.designCategory?.name || "N/A"}
             </p>
           </div>
 
           <div className="space-y-2">
             <Label>Subcategory</Label>
-            {/* @ts-ignore */}
             <p className="text-sm font-medium">
+            {/* @ts-ignore */}
               {design.subCategory?.name || "N/A"}
             </p>
           </div>

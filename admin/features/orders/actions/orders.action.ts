@@ -8,7 +8,6 @@ export const getAllOrders = async () => {
       return  data
     } catch (error: any) {
       console.error("Error while fetching orders: ", error);
-      return { error: error.message };
     }
   };
 
