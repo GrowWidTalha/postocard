@@ -17,8 +17,6 @@ import { UploadDropzone } from '@/lib/uploadthing'
 
 const categorySchema = z.object({
     name: z.string(),
-    thumbnailUrl: z.string(),
-    thumbnailUploadId: z.string(),
     designType: z.nativeEnum(DesignType),
 })
 
@@ -26,12 +24,12 @@ const CreateCategoryDialog = ({ children }: { children: React.ReactNode}) => {
     const [open, setOpen] = useState(false)
     const form = useForm<z.infer<typeof categorySchema>>({
         resolver: zodResolver(categorySchema),
-        defaultValues: { name: "", thumbnailUrl: "", thumbnailUploadId: "", designType: DesignType.OCCASION }
+        defaultValues: { name: "", designType: DesignType.OCCASION }
     })
     const queryClient = useQueryClient()
     const { mutate, isPending } = useMutation({
         mutationFn: async (values: z.infer<typeof categorySchema>) => {
-            const res = await createCategory(values.name, values.thumbnailUrl, values.thumbnailUploadId, values.designType)
+            const res = await createCategory(values.name, values.designType)
             setOpen(false)
             return res
         },
@@ -65,23 +63,7 @@ const CreateCategoryDialog = ({ children }: { children: React.ReactNode}) => {
                                 </FormItem>
                             )}
                         />
-                        <FormField
-                            control={form.control}
-                            name="thumbnailUrl"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Thumbnail</FormLabel>
-                                 <UploadDropzone
-                                    endpoint={"imageUploader"}
-                                    onClientUploadComplete={(res) => {
-                                        form.setValue("thumbnailUrl", res[0].url)
-                                        form.setValue("thumbnailUploadId", res[0].key)
-                                    }}
-                                 />
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+
                         <FormField
                             control={form.control}
                             name="designType"

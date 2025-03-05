@@ -60,8 +60,9 @@ const LoginForm = () => {
   return (
     <CardWrapper
       headerLabel="Welcome back"
-      backButtonLabel=""
-      backButtonHref=""
+      backButtonLabel="Don't have an account? Create one"
+      showSocial={true}
+      backButtonHref="/auth/register"
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">

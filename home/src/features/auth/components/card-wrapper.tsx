@@ -20,17 +20,17 @@ const CardWrapper = ({
   showSocial,
 }: Props) => {
   return (
-    <Card className="min-w-[400px] shadow-md">
-      <CardHeader>
+    <Card className="min-w-[400px] shadow-md border-yellow-100 bg-white">
+      <CardHeader className="pb-4">
         <Header label={headerLabel} />
       </CardHeader>
-      <CardContent>{children}</CardContent>
+      <CardContent className="pb-6">{children}</CardContent>
       {showSocial && (
-        <CardFooter>
+        <CardFooter className="border-t border-yellow-100 pt-6">
           <Social />
         </CardFooter>
       )}
-      <CardFooter>
+      <CardFooter className="border-t border-yellow-100 pt-6">
         <BackButton
             label={backButtonLabel}
             href={backButtonHref}

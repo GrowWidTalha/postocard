@@ -115,7 +115,7 @@ const CreateUserForm = ({
           <Button className="" type="submit" disabled={isPending}>
             {isPending && <Spinner size={"small"} className="text-white" />}
             Create{" "}
-            {role === "PRINTING_PROVIDER" ? "Printing Provider" : "Designer"}
+            {role === "PRINTING_PROVIDER" ? "Printing Provider" : role === "ADMIN" ? "Admin" : "Designer"}
           </Button>
         </DialogFooter>
       </form>

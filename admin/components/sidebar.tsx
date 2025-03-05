@@ -1,4 +1,4 @@
-import { Home, type LucideIcon, ShoppingBag, PackageOpen, Settings, BookA, Printer, PaintRoller, LogOutIcon } from 'lucide-react';
+import { Home, type LucideIcon, ShoppingBag, PackageOpen, Settings, BookA, Printer, PaintRoller, LogOutIcon, Shield } from 'lucide-react';
 import { PinTopIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { Button, buttonVariants } from "./ui/button";
@@ -71,6 +71,7 @@ const SIDEBAR_ITEMS: SidebarCategory[] = [
         text: "Printing providers",
       },
       { href: "/designers", icon: PaintRoller, text: "Designers" },
+      { href: "/admins", icon: Shield, text: "Admins" },
     ],
   },
 ];

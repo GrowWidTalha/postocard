@@ -115,13 +115,6 @@ const CategoryPageClient = ({
         {categoriesData.map((category) => (
           <Card key={category.id} className="w-full overflow-hidden">
             <div className="flex flex-col md:flex-row">
-              <Image
-                src={category.thumbnailUrl || "/placeholder.svg"}
-                alt={category.name}
-                width={200}
-                height={200}
-                className="w-full md:w-48 h-48 object-cover"
-              />
               <div className="flex-grow">
                 <CardHeader
                   className="flex flex-row items-center justify-between cursor-pointer p-4 md:p-6"
@@ -171,13 +164,6 @@ const CategoryPageClient = ({
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {subCategoriesData.map((subCategory) => (
                         <Card key={subCategory.id} className="overflow-hidden">
-                          <Image
-                            src={subCategory.thumbnailUrl || "/placeholder.svg"}
-                            alt={subCategory.name}
-                            width={200}
-                            height={200}
-                            className="w-full h-40 object-cover"
-                          />
                           <CardContent className="p-4">
                             <h4 className="font-semibold mb-2">{subCategory.name}</h4>
                             <p className="text-sm text-muted-foreground mb-3">

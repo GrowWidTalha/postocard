@@ -1,18 +1,10 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { getSubCategoriesByCategoryName } from "@/features/designs/actions/designs.actions";
-import { SubCategory } from "@prisma/client";
 import { FaSpinner } from "react-icons/fa";
 import Link from "next/link";
-import Image from "next/image";
-
-interface User {
-  title1: string;
-  imageurl1: string;
-  id: number;
-}
 
 const Page = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = useParams();
@@ -40,36 +32,42 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
   }
 
   return (
-    <div className="p-2 xs:p-4 sm:p-8 bg-gray-100 sm:w-6/7 sm:h-10/12 min-h-screen cursor-pointer">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
         {/* @ts-ignore */}
-        <h1 className="text-4xl font-bold my-4">{id.replace("-", " ")}</h1>
-      {isPending ? <div className="min-h-screen flex items-center justify-center w-full">
-          <FaSpinner className="animate-spin" />
-        </div>
-        : (
-    <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-4 lg:grid-cols-3 gap-8 xs:gap-6 sm:gap-8 lg:gap-10">
-              {data?.map((card) => (
-                <div
-                  key={card.id}
-                  className="bg-white rounded-lg shadow-lg overflow-hidden"
-                >
-                  <Link href={`/Cards/${id}/${card.name.replace(" ", "-")}`} legacyBehavior>
-                    <img
-                      className="w-full h-32 xs:h-40 sm:h-48 object-cover"
-                      src={card.thumbnailUrl || "https://via.placeholder.com/150"}
-                      alt={card.name || "Card image"}
-                    />
-                  </Link>
-                  <div className="p-2 xs:p-3 sm:p-4">
-                    <h3 className="text-lg xs:text-xl font-semibold text-gray-800">
+        <h1 className="text-3xl font-serif font-semibold text-gray-800 mb-8">{id.replace("-", " ")}</h1>
+
+        {isPending ? (
+          <div className="flex justify-center items-center min-h-[400px]">
+            <FaSpinner className="animate-spin text-4xl text-yellow-500" />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {data?.map((card) => (
+              <Link
+                href={`/Cards/${id}/${card.name.replace(" ", "-")}`}
+                key={card.id}
+                className="transform transition-all duration-300 hover:scale-105"
+              >
+                <div className="bg-white rounded-xl shadow-md hover:shadow-xl overflow-hidden border border-gray-100">
+                  <div className="aspect-w-16 aspect-h-9 bg-gray-200">
+                    {/* <div className="w-full h-48 bg-gradient-to-br from-yellow-100 to-yellow-300" /> */}
+                  </div>
+                  <div className="p-6">
+                    <h3 className="text-xl font-serif font-semibold text-gray-800 mb-2">
                       {card.name}
                     </h3>
+                    <p className="text-gray-600 text-sm">
+                      Explore our beautiful collection of {card.name.toLowerCase()}
+                    </p>
                   </div>
                 </div>
-              ))}
+              </Link>
+            ))}
           </div>
-      )}
-  </div>
+        )}
+      </div>
+    </div>
   );
 };
 

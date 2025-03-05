@@ -11,6 +11,7 @@ import { InformationStep } from "./informationStep"
 import { PaymentStep } from "./paymentStep"
 import { SuccessStep } from "./successStep"
 import { placeOrder } from "@/features/designs/actions/order.actions"
+import { useDesignStore } from "@/hooks/store"
 
 const schema = z.object({
   recipientName: z.string().min(1, "Recipient name is required"),
@@ -30,10 +31,13 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>
 
 const CheckoutFlow = () => {
+  const {clearCart} = useCartStore()
+  const {resetDesignStore} = useDesignStore()
   const [step, setStep] = useState(1)
   const { items } = useCartStore()
   const [orderData, setOrderData] = useState<FormData | null>(null)
   const [paymentId, setPaymentId] = useState("")
+  const { fromText, toText } = useDesignStore()
 
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -70,10 +74,13 @@ const CheckoutFlow = () => {
         recipientAddress: orderData?.recipientAddress!,
         recipientName: orderData?.recipientName!,
         senderAddress: orderData?.senderAddress,
-        senderName: orderData?.senderName
+        senderName: orderData?.senderName,
+        from: fromText,
+        to: toText
     }, items[0])
 
-    alert("Order done successfully")
+    clearCart()
+    resetDesignStore()
     setStep(3)
   }
 

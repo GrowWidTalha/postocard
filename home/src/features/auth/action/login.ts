@@ -34,11 +34,6 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
       return { success: "Confirmation email sent" };
     }
 
-  const isAdmin = existingUser.role === "ADMIN";
-
-  if(!isAdmin) {
-    return { error: "Only admins can access this dashboard!"}
-  }
 
   if (existingUser.isTwoFactorEnabled && existingUser.email) {
     if (code) {

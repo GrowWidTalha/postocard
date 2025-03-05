@@ -49,16 +49,12 @@ export const deleteSubCategory = async (subCategoryId: string) => {
 export const createSubCategory = async (
   name: string,
   categoryId: string,
-  thumbnailUploadId: string,
-  thumbnailUrl: string,
 ) => {
   try {
     const newSubCategory = await db.subCategory.create({
       data: {
         name: name,
         designCategoryId: categoryId,
-        thumbnailUploadId: thumbnailUploadId,
-        thumbnailUrl: thumbnailUrl
       },
     });
     return newSubCategory;
@@ -100,19 +96,12 @@ export const getSubCategoriesByCategory = async (categoryId: string) => {
 
 export const createCategory = async (
   name: string,
-  thumbnailUrl: string,
-  thumbnailUploadId: string,
   designType: DesignType
 ) => {
-    console.log({
-        name, thumbnailUrl, thumbnailUploadId, designType
-    })
   try {
     const newCategory = await db.designCategory.create({
       data: {
         name: name,
-        thumbnailUploadId: thumbnailUploadId,
-        thumbnailUrl: thumbnailUrl,
         designType: designType,
       },
     });

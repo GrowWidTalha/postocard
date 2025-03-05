@@ -27,7 +27,7 @@ const CreateUserModal = ({
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add new {role === "PRINTING_PROVIDER" ? "Printing Provider" : "Designer"}</DialogTitle>
+          <DialogTitle>Add new {role === "PRINTING_PROVIDER" ? "Printing Provider" : role === "ADMIN" ? "Admin" : "Designer"}</DialogTitle>
         </DialogHeader>
         <CreateUserForm role={role} setOpen={setOpen} />
       </DialogContent>
