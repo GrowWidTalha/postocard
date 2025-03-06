@@ -48,6 +48,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
 
       await db.twoFactorToken.delete({ where: { id: token.id } });
 
+      console.log("Authentication successful")
       const existingTwoFactorConfirmation =
         await getTwoFactorConfirmationByUserId(existingUser.id);
 

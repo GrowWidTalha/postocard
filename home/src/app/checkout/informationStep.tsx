@@ -5,18 +5,10 @@ import Select from "react-select"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { useCurrentUser } from "@/features/auth/hooks/use-current-user"
-
-const countryOptions = [
-  { value: "sri-lanka", label: "Sri Lanka" },
-  { value: "usa", label: "United States" },
-]
-
-const provinceOptions = [
-  { value: "western", label: "Western Province" },
-  { value: "central", label: "Central Province" },
-]
+import countryList from 'react-select-country-list'
+import { Country, State } from 'country-state-city'
 
 const benefits = [
   {
@@ -41,6 +33,39 @@ const benefits = [
 export const InformationStep = ({ form }) => {
   const user = useCurrentUser()
   const [showModal, setShowModal] = useState(false)
+  const [selectedCountry, setSelectedCountry] = useState(null)
+  const [provinces, setProvinces] = useState([])
+
+  // Get countries list
+  const countries = useMemo(() => {
+    return Country.getAllCountries().map(country => ({
+      value: country.isoCode,
+      label: country.name
+    }))
+  }, [])
+
+  // Update provinces when country changes
+  useEffect(() => {
+    if (selectedCountry) {
+      // @ts-ignore
+      const statesList = State.getStatesOfCountry(selectedCountry.value).map(state => ({
+        value: state.isoCode,
+        label: state.name
+      }))
+      // @ts-ignore
+      setProvinces(statesList)
+      // Reset province selection when country changes
+      form.setValue('province', null)
+    } else {
+      setProvinces([])
+    }
+  }, [selectedCountry, form])
+
+  // Handle country change
+  const handleCountryChange = (option: any) => {
+    setSelectedCountry(option)
+    form.setValue('country', option)
+  }
 
   const handleContinueAsGuest = () => {
     setShowModal(false)
@@ -128,7 +153,14 @@ export const InformationStep = ({ form }) => {
                 <FormItem>
                   <FormLabel>Country</FormLabel>
                   <FormControl>
-                    <Select {...field} options={countryOptions} placeholder="Select Country" />
+                    <Select
+                      {...field}
+                      options={countries}
+                      placeholder="Select Country"
+                      onChange={handleCountryChange}
+                      value={selectedCountry}
+                      isClearable
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -139,9 +171,15 @@ export const InformationStep = ({ form }) => {
               name="province"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Province</FormLabel>
+                  <FormLabel>Province/State</FormLabel>
                   <FormControl>
-                    <Select {...field} options={provinceOptions} placeholder="Select Province" />
+                    <Select
+                      {...field}
+                      options={provinces}
+                      placeholder={selectedCountry ? "Select Province/State" : "Select a country first"}
+                      isDisabled={!selectedCountry}
+                      isClearable
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -264,7 +302,14 @@ export const InformationStep = ({ form }) => {
                 <FormItem>
                   <FormLabel>Country</FormLabel>
                   <FormControl>
-                    <Select {...field} options={countryOptions} placeholder="Select Country" />
+                    <Select
+                      {...field}
+                      options={countries}
+                      placeholder="Select Country"
+                      onChange={handleCountryChange}
+                      value={selectedCountry}
+                      isClearable
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -275,9 +320,15 @@ export const InformationStep = ({ form }) => {
               name="province"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Province</FormLabel>
+                  <FormLabel>Province/State</FormLabel>
                   <FormControl>
-                    <Select {...field} options={provinceOptions} placeholder="Select Province" />
+                    <Select
+                      {...field}
+                      options={provinces}
+                      placeholder={selectedCountry ? "Select Province/State" : "Select a country first"}
+                      isDisabled={!selectedCountry}
+                      isClearable
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

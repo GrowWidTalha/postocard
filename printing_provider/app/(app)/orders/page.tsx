@@ -12,7 +12,7 @@ const OrdersPage = async() => {
         return <Spinner size={"large"} />
     }
   return (
-    <DashboardPage title='Orders' >
+    <DashboardPage title='Orders' hideBackButton>
         {/* @ts-ignore */}
         <OrdersClient orders={orders} />
     </DashboardPage>

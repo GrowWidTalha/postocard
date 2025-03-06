@@ -1,11 +1,17 @@
 "use server";
 import { db } from "@/db";
+import { currentUser } from "@/features/auth/lib/auth";
 import { OrderStatus, PrintStatus } from "@prisma/client";
 
 export const getAllOrders = async () => {
+  const user = await currentUser();
+  if (!user) {
+    return
+  }
     try {
-      const data = await db.order.findMany({ include: { user: true, design: true     } });
-      console.log("Running this functon")
+      const data = await db.order.findMany({ include: { user: true, design: true} , where: {
+        assigneeId: user?.id
+      }});
       return  data
     } catch (error: any) {
       console.error("Error while fetching orders: ", error);

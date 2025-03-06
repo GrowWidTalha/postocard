@@ -10,7 +10,7 @@ import { useCallback, useEffect, useState } from "react"
 
 const OrdersClient = ({ orders: initialOrders }: { orders: Order[] }) => {
   const searchParams = useSearchParams()
-
+  const router = useRouter()
   // Get filter values from URL
   const [printStatus, setPrintStatus] = useState(() => searchParams.get("printStatus") || "")
   const [orderStatus, setOrderStatus] = useState(() => searchParams.get("orderStatus") || "")
@@ -25,8 +25,8 @@ const OrdersClient = ({ orders: initialOrders }: { orders: Order[] }) => {
     // @ts-ignore
     initialData: initialOrders,
   });
-   // Update URL when filters change
-   const updateSearchParams = useCallback(() => {
+  // Update URL when filters change
+  const updateSearchParams = useCallback(() => {
     const params = new URLSearchParams(searchParams)
 
     if (printStatus) {
@@ -57,6 +57,7 @@ const OrdersClient = ({ orders: initialOrders }: { orders: Order[] }) => {
 
   // Filter orders based on current filter values
   const filteredOrders =
+  // @ts-ignore
     orders?.filter((order) => {
       // Filter by search query (email)
       const matchesQuery = !query || order.guestEmail?.toLowerCase().includes(query.toLowerCase()) || false
@@ -72,17 +73,17 @@ const OrdersClient = ({ orders: initialOrders }: { orders: Order[] }) => {
 
   return (
     <div>
-    <OrderFilters
-      printStatus={printStatus}
-      setPrintStatus={setPrintStatus}
-      orderStatus={orderStatus}
-      setOrderStatus={setOrderStatus}
-      query={query}
-      setQuery={setQuery}
-    />
-{/* @ts-ignore */}
-    {isPending ? <div>Loading...</div> : <OrdersTable orders={filteredOrders} isPending={isPending} />}
-  </div>
+      <OrderFilters
+        printStatus={printStatus}
+        setPrintStatus={setPrintStatus}
+        orderStatus={orderStatus}
+        setOrderStatus={setOrderStatus}
+        query={query}
+        setQuery={setQuery}
+      />
+      {/* @ts-ignore */}
+      {isPending ? <div>Loading...</div> : <OrdersTable orders={filteredOrders} isPending={isPending} />}
+    </div>
   );
 };
 

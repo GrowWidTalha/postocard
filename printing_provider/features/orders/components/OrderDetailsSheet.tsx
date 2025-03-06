@@ -29,6 +29,7 @@ import {
   RefreshCw,
   Loader2,
   Download,
+  Eye,
 } from "lucide-react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { getUsersByRole } from "@/features/peoples/actions/people"
@@ -46,6 +47,7 @@ const OrderDetailsSheet = ({
   const confirm = useConfirm()
   const [assignee, setAssignee] = useState(orderDetails.assigneeId || "")
   const [status, setStatus] = useState(orderDetails.status || "")
+  const [pdfPreview, setPdfPreview] = useState<string | null>(null)
   const queryClient = useQueryClient()
 
   const { data, isPending } = useQuery({
@@ -104,70 +106,6 @@ const OrderDetailsSheet = ({
     },
   })
 
-  const handleDelete = async () => {
-    try {
-      const isConfirmed = await confirm({
-        title: "Delete Order",
-        description: "Are you sure you want to delete this order?",
-        // @ts-ignore
-        customActions: ({ confirm, cancel }) => (
-          <div className="flex justify-end space-x-2">
-            <Button variant="outline" onClick={cancel} disabled={isDeleting}>
-              Cancel
-            </Button>
-            <Button variant="destructive" onClick={confirm} disabled={isDeleting}>
-              {isDeleting ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Deleting...
-                </>
-              ) : (
-                "Delete"
-              )}
-            </Button>
-          </div>
-        ),
-      })
-      if (isConfirmed) {
-        deleteOrderFn()
-      }
-    } catch (error) {
-      console.error("Error deleting order:", error)
-    }
-  }
-
-  const handleAssign = async () => {
-    try {
-      const isConfirmed = await confirm({
-        title: "Assign Order",
-        description: `Are you sure you want to assign this order to ${assignee}?`,
-        // @ts-ignore
-        customActions: ({ confirm, cancel }) => (
-          <div className="flex justify-end space-x-2">
-            <Button variant="outline" onClick={cancel} disabled={isAssigning}>
-              Cancel
-            </Button>
-            <Button variant="default" onClick={confirm} disabled={isAssigning}>
-              {isAssigning ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Assigning...
-                </>
-              ) : (
-                "Assign"
-              )}
-            </Button>
-          </div>
-        ),
-      })
-      if (isConfirmed) {
-        assignOrderFn({ orderId: orderDetails.id, assigneeOrder: assignee })
-      }
-    } catch (error) {
-      console.error("Error assigning order:", error)
-    }
-  }
-
   const handleUpdateStatus = async () => {
     try {
       const isConfirmed = await confirm({
@@ -206,7 +144,6 @@ const OrderDetailsSheet = ({
     console.log(src)
     return new Promise((resolve, reject) => {
       const img = new Image()
-    //   img.crossOrigin = "anonymous"
       img.onload = () => resolve(img)
       img.onerror = (e) => {
         console.error(`Error loading ${description} image:`, e)
@@ -216,34 +153,74 @@ const OrderDetailsSheet = ({
     })
   }
 
-  const generatePDF = async () => {
+  const drawTiltedText = (doc: jsPDF, text: string, label: string, x: number, y: number, angle: number) => {
+    // Draw the label first
+    doc.setFont("helvetica", "italic")
+    doc.setFontSize(14)
+    doc.setTextColor(102, 102, 102) // #666666
+    doc.text(label, x - 20, y - 15)
+
+    // Draw the main text
+    doc.setFont("helvetica", "italic")
+    doc.setFontSize(24)
+    doc.setTextColor(0, 0, 0) // #000000
+    doc.text(text, x, y, { align: "center", angle: angle })
+  }
+
+  const generatePDF = async (preview = false) => {
     setIsGeneratingPDF(true)
     const doc = new jsPDF()
 
     try {
       // Page 1: Thumbnail
       console.log("Loading thumbnail image...")
-    //   @ts-ignore
+      // @ts-ignore
       const thumbnailImg = await loadImage(orderDetails.design?.thumbnailUrl!, "thumbnail")
       doc.addImage(thumbnailImg, "JPEG", 0, 0, 210, 297)
 
       // Page 2: PDF Link
       console.log("Loading PDF link image...")
       doc.addPage()
-    //   @ts-ignore
+      // @ts-ignore
       const pdfLinkImg = await loadImage(orderDetails.design?.pdfLink!, "PDF link")
       doc.addImage(pdfLinkImg, "JPEG", 0, 0, 210, 297)
 
-      // Page 3: Custom Text
+      // Page 3: Custom Text with From/To
       console.log("Adding custom text page...")
       doc.addPage()
       doc.setFillColor(255, 255, 255)
       doc.rect(0, 0, 210, 297, "F")
+
+      // Draw main text in center with larger font
       doc.setFont("helvetica", "italic")
-      doc.setFontSize(20)
+      doc.setFontSize(32)
       doc.setTextColor(0, 0, 0)
       const splitText = doc.splitTextToSize(orderDetails.customMessage || "", 180)
       doc.text(splitText, 105, 148, { align: "center" })
+
+      // Draw From text in top left with tilt
+      if (orderDetails.from) {
+        drawTiltedText(
+          doc,
+          orderDetails.from,
+          "From:",
+          60,
+          50,
+          Math.PI / 12
+        )
+      }
+
+      // Draw To text in bottom right with tilt in opposite direction
+      if (orderDetails.to) {
+        drawTiltedText(
+          doc,
+          orderDetails.to,
+          "To:",
+          150,
+          247,
+          -Math.PI / 12
+        )
+      }
 
       // Page 4: Static Image
       console.log("Loading static image...")
@@ -251,13 +228,19 @@ const OrderDetailsSheet = ({
       const staticImg = await loadImage("/last-page.jpg", "static")
       doc.addImage(staticImg, "JPEG", 0, 0, 210, 297)
 
-      // Save the PDF
-      doc.save(`${orderDetails.recipientName}_order.pdf`)
+      if (preview) {
+        // Generate data URL for preview
+        const pdfDataUrl = doc.output('dataurlstring')
+        setPdfPreview(pdfDataUrl)
+      } else {
+        // Save the PDF
+        doc.save(`${orderDetails.recipientName}_order.pdf`)
+        toast.success("PDF generated and downloaded successfully.")
+      }
 
-      toast.success("PDF generated and downloaded successfully.")
     } catch (error) {
       console.error("Error generating PDF:", error)
-    //   @ts-ignore
+      // @ts-ignore
       toast.error(`Failed to generate PDF: ${error.message}`)
     } finally {
       setIsGeneratingPDF(false)
@@ -265,70 +248,48 @@ const OrderDetailsSheet = ({
   }
 
   return (
-    <Sheet>
+    <Sheet >
       <SheetTrigger asChild>{children}</SheetTrigger>
-      <SheetContent className="sm:max-w-[500px]">
+      <SheetContent className="sm:max-w-[500px] overflow-y-auto">
         <SheetHeader>
           <SheetTitle className="text-2xl">{orderDetails.recipientName}'s Order</SheetTitle>
-          <SheetDescription className="flex items-center text-base">
-            <Package className="mr-2 h-4 w-4" />
-            {orderDetails.recipientAddress}
+          <SheetDescription className="flex flex-col gap-2 text-base">
+            <div className="flex items-center">
+              <Package className="mr-2 h-4 w-4" />
+              {orderDetails.recipientAddress}
+            </div>
+            <div className="flex items-center">
+              <User className="mr-2 h-4 w-4" />
+              {/* @ts-ignore */}
+              Email: {orderDetails?.user?.email || orderDetails.guestEmail}
+            </div>
           </SheetDescription>
         </SheetHeader>
         <Separator className="my-4" />
         <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">Order ID</Label>
-            <p className="text-sm">{orderDetails.id}</p>
-          </div>
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">User ID</Label>
-            <p className="text-sm flex items-center">
-              <User className="mr-2 h-4 w-4" />
-              {orderDetails.userId}
-            </p>
-          </div>
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">Assignee ID</Label>
-            <p className="text-sm flex items-center">
-              <UserCheck className="mr-2 h-4 w-4" />
-              {orderDetails.assigneeId || "Not assigned"}
-            </p>
-          </div>
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">Design ID</Label>
-            <p className="text-sm flex items-center">
-              <PaintBucket className="mr-2 h-4 w-4" />
-              {orderDetails.designId}
-            </p>
-          </div>
-          <div className="col-span-2 space-y-2">
-            <Label className="text-sm font-medium">Custom Message</Label>
-            <p className="text-sm flex items-center">
-              <MessageSquare className="mr-2 h-4 w-4" />
-              {orderDetails.customMessage}
-            </p>
-          </div>
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">Print Status</Label>
-            <p className="text-sm flex items-center">
-              <Printer className="mr-2 h-4 w-4" />
-              {orderDetails.printStatus}
-            </p>
-          </div>
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">Status</Label>
-            <p className="text-sm flex items-center">
-              <AlertCircle className="mr-2 h-4 w-4" />
-              {orderDetails.status}
-            </p>
-          </div>
-          <div className="col-span-2 space-y-2">
-            <Label className="text-sm font-medium">Stripe Payment ID</Label>
-            <p className="text-sm flex items-center">
-              <CreditCard className="mr-2 h-4 w-4" />
-              {orderDetails.stripePaymentId || "Not available"}
-            </p>
+          <div className="col-span-2 space-y-4">
+            <div>
+              <Label className="text-sm font-medium">From</Label>
+              <p className="text-sm flex items-center mt-1">
+                {orderDetails.from || 'N/A'}
+              </p>
+            </div>
+            <div>
+              <Label className="text-sm font-medium">To</Label>
+              <p className="text-sm flex items-center mt-1">
+                {orderDetails.to || 'N/A'}
+              </p>
+            </div>
+            <div>
+              <Label className="text-sm font-medium">Sender Details</Label>
+              <p className="text-sm flex items-center mt-1">
+                {/* @ts-ignore */}
+                Name: {orderDetails.senderName || orderDetails.user?.name || 'N/A'}
+              </p>
+              <p className="text-sm flex items-center mt-1">
+                Address: {orderDetails.senderAddress || 'N/A'}
+              </p>
+            </div>
           </div>
         </div>
         <Separator className="my-4" />
@@ -348,6 +309,12 @@ const OrderDetailsSheet = ({
               </SelectContent>
             </Select>
           </div>
+          {pdfPreview && (
+            <div className="mt-4">
+              <Label className="text-sm font-medium">PDF Preview</Label>
+              <iframe src={pdfPreview} className="w-full h-[500px] border rounded-lg mt-2" />
+            </div>
+          )}
         </div>
         <SheetFooter className="mt-4">
           <div className="flex justify-between w-full">
@@ -364,19 +331,34 @@ const OrderDetailsSheet = ({
               )}
               {isStatusUpdating ? "Updating..." : "Update Status"}
             </Button>
-            <Button
-              variant="outline"
-              onClick={generatePDF}
-              className="w-full sm:w-auto ml-2"
-              disabled={isGeneratingPDF}
-            >
-              {isGeneratingPDF ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Download className="mr-2 h-4 w-4" />
-              )}
-              {isGeneratingPDF ? "Generating..." : "Generate PDF"}
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={() => generatePDF(true)}
+                className="w-full sm:w-auto"
+                disabled={isGeneratingPDF}
+              >
+                {isGeneratingPDF ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Eye className="mr-2 h-4 w-4" />
+                )}
+                {isGeneratingPDF ? "Generating..." : "Preview PDF"}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => generatePDF(false)}
+                className="w-full sm:w-auto"
+                disabled={isGeneratingPDF}
+              >
+                {isGeneratingPDF ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Download className="mr-2 h-4 w-4" />
+                )}
+                {isGeneratingPDF ? "Generating..." : "Download PDF"}
+              </Button>
+            </div>
           </div>
         </SheetFooter>
       </SheetContent>
