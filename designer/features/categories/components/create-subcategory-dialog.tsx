@@ -16,8 +16,6 @@ import { createSubCategory } from '../actions/category.actions'
 
 const subcategorySchema = z.object({
     name: z.string(),
-    thumbnailUrl: z.string(),
-    thumbnailUploadId: z.string(),
     categoryId: z.string(),
 })
 
@@ -25,12 +23,12 @@ const CreateSubCategoryDialog = ({ categoryId, children }: { categoryId: string;
     const [open, setOpen] = useState(false)
     const form = useForm<z.infer<typeof subcategorySchema>>({
         resolver: zodResolver(subcategorySchema),
-        defaultValues: { name: "", thumbnailUrl: "", thumbnailUploadId: "", categoryId: categoryId }
+        defaultValues: { name: "", categoryId: categoryId }
     })
     const queryClient = useQueryClient()
     const { mutate, isPending } = useMutation({
         mutationFn: async (values: z.infer<typeof subcategorySchema>) => {
-            const res = await createSubCategory(values.name, categoryId, values.thumbnailUploadId, values.thumbnailUrl)
+            const res = await createSubCategory(values.name, categoryId)
             setOpen(false)
             return res
         },
@@ -60,23 +58,6 @@ const CreateSubCategoryDialog = ({ categoryId, children }: { categoryId: string;
                                     <FormControl>
                                         <Input placeholder="Birthday" {...field} />
                                     </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="thumbnailUrl"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Thumbnail</FormLabel>
-                                 <UploadDropzone
-                                    endpoint={"imageUploader"}
-                                    onClientUploadComplete={(res) => {
-                                        form.setValue("thumbnailUrl", res[0].url)
-                                        form.setValue("thumbnailUploadId", res[0].key)
-                                    }}
-                                 />
                                     <FormMessage />
                                 </FormItem>
                             )}
