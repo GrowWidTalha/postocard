@@ -64,7 +64,7 @@ const DesignCard = ({ design }: { design: Design }) => {
                   cn({
                     "bg-yellow-500/50": design.status === "PENDING",
                     "bg-green-500/50": design.status === "APPROVED",
-                    "bg-red-500/50": design.status === "DISABLED",
+                    "bg-red-500/50": design.status === "REJECTED",
                   }) + " backdrop-blur-sm"
                 }
               >
