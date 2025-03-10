@@ -233,9 +233,15 @@ const OrderDetailsSheet = ({
         const pdfDataUrl = doc.output('dataurlstring')
         setPdfPreview(pdfDataUrl)
       } else {
-        // Save the PDF
-        doc.save(`${orderDetails.recipientName}_order.pdf`)
-        toast.success("PDF generated and downloaded successfully.")
+        // Save the PDF and open it
+        const pdfBlob = doc.output('blob');
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+        doc.save(`${orderDetails.recipientName}_order.pdf`);
+
+        // Open PDF in default PDF viewer
+        window.open(pdfUrl, '_blank');
+
+        toast.success("PDF generated, downloaded and opened successfully.");
       }
 
     } catch (error) {
@@ -281,13 +287,13 @@ const OrderDetailsSheet = ({
               </p>
             </div>
             <div>
-              <Label className="text-sm font-medium">Sender Details</Label>
+              <Label className="text-sm font-medium">Reciepent Details</Label>
               <p className="text-sm flex items-center mt-1">
                 {/* @ts-ignore */}
-                Name: {orderDetails.senderName || orderDetails.user?.name || 'N/A'}
+                Name: {orderDetails.recipientName || orderDetails.user?.name || 'N/A'}
               </p>
               <p className="text-sm flex items-center mt-1">
-                Address: {orderDetails.senderAddress || 'N/A'}
+                Address: {orderDetails.recipientAddress || 'N/A'}
               </p>
             </div>
           </div>
