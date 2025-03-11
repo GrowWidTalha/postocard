@@ -178,6 +178,14 @@ const OrderDetailsSheet = ({
       const thumbnailImg = await loadImage(orderDetails.design?.thumbnailUrl!, "thumbnail")
       doc.addImage(thumbnailImg, "JPEG", 0, 0, 210, 297)
 
+ // Page 4: Static Image
+ console.log("Loading static image...")
+ doc.addPage()
+ const staticImg = await loadImage("/last-page.jpg", "static")
+ doc.addImage(staticImg, "JPEG", 0, 0, 210, 297)
+
+      // Page 3: Custom Text with From/To
+
       // Page 2: PDF Link
       console.log("Loading PDF link image...")
       doc.addPage()
@@ -185,7 +193,6 @@ const OrderDetailsSheet = ({
       const pdfLinkImg = await loadImage(orderDetails.design?.pdfLink!, "PDF link")
       doc.addImage(pdfLinkImg, "JPEG", 0, 0, 210, 297)
 
-      // Page 3: Custom Text with From/To
       console.log("Adding custom text page...")
       doc.addPage()
       doc.setFillColor(255, 255, 255)
@@ -221,12 +228,6 @@ const OrderDetailsSheet = ({
           -Math.PI / 12
         )
       }
-
-      // Page 4: Static Image
-      console.log("Loading static image...")
-      doc.addPage()
-      const staticImg = await loadImage("/last-page.jpg", "static")
-      doc.addImage(staticImg, "JPEG", 0, 0, 210, 297)
 
       if (preview) {
         // Generate data URL for preview
