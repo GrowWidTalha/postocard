@@ -27,24 +27,42 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
   },
   callbacks: {
-    async signIn({ user, account }) {
-      if (account?.provider !== "credentials") return true;
+    signIn: async({ user, account }) => {
+      console.log("Starting signIn callback with:", { userId: user.id, provider: account?.provider });
+
+      if (account?.provider !== "credentials") {
+        console.log("Non-credentials provider, allowing sign in");
+        return true;
+      }
+
+      console.log("Fetching existing user from database");
       const existingUser = await getUserById(user.id!);
+      console.log("Found user:", existingUser);
+
       if (!existingUser || !existingUser.emailVerified) {
+        console.log("User validation failed:", { exists: !!existingUser, emailVerified: existingUser?.emailVerified });
         return false;
       }
 
       if (existingUser.isTwoFactorEnabled) {
+        console.log("2FA is enabled, checking for confirmation");
         const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(
           existingUser.id
         );
-        if (!twoFactorConfirmation) return false;
+        console.log("2FA confirmation status:", { exists: !!twoFactorConfirmation });
 
+        if (!twoFactorConfirmation) {
+          console.log("No 2FA confirmation found, denying access");
+          return false;
+        }
+
+        console.log("Deleting used 2FA confirmation");
         await db.twoFactorConfirmation.delete({
           where: { id: twoFactorConfirmation.id },
         });
       }
 
+      console.log("All checks passed, allowing sign in");
       return true;
     },
     async session({ token, session }) {

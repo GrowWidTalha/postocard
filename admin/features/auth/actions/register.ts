@@ -21,7 +21,7 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
     return { error: "Email already taken." };
   }
 
-  await db.user.create({
+  const user = await db.user.create({
     data: {
       name,
       email,
@@ -34,5 +34,10 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
     verificationtoken.email,
     verificationtoken.token,
   );
+  await db.twoFactorConfirmation.create({
+    data: {
+      userId: user.id,
+    },
+  });
   return { success: "Confirmation email sent!" };
 };

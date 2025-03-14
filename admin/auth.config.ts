@@ -17,18 +17,33 @@ export default {
     }),
     Credentials({
       async authorize(credentials) {
+        console.log("Starting authorize with credentials:", { ...credentials, password: "[REDACTED]" });
+
         const validatedFields = LoginSchema.safeParse(credentials);
+        console.log("Field validation result:", validatedFields);
 
         if (validatedFields.success) {
           const { email, password } = validatedFields.data;
+          console.log("Attempting to find user with email:", email);
 
           const user = await getUserByEmail(email);
+          console.log("Found user:", { ...user, password: "[REDACTED]" });
+
           if (!user || !user.password) {
+            console.log("User validation failed:", { exists: !!user, hasPassword: !!user?.password });
             return null;
           }
+
+          console.log("Comparing passwords");
           const passwordMatch = await bcrypt.compare(password, user.password);
-          if (passwordMatch) return user;
+          console.log("Password match result:", passwordMatch);
+
+          if (passwordMatch) {
+            console.log("Password matched, returning user");
+            return user;
+          }
         }
+        console.log("Authorization failed, returning null");
         return null;
       },
     }),

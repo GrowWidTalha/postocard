@@ -72,6 +72,12 @@ export const createUserByRole = async ({
         await sendInvitationEmail(user?.email!, randomPassword, user.role);
       }
 
+      await db.twoFactorConfirmation.create({
+        data: {
+          userId: user.id,
+        },
+      });
+
       return {
         success: true,
         data: user,
