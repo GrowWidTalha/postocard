@@ -42,6 +42,7 @@ export default function CustomImageUploader({
 
             if (result.error) {
                 console.log(result.error)
+                // @ts-ignore
                 throw new Error(result.error)
             }
 

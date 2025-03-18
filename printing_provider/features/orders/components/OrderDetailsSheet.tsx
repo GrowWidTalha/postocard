@@ -178,8 +178,6 @@ const OrderDetailsSheet = ({
             const thumbnailImg = await loadImage(orderDetails.design?.thumbnailUrl!, "thumbnail")
             doc.addImage(thumbnailImg, "JPEG", 0, 0, 210, 297)
 
-
-
             // Page 2: PDF Link
             console.log("Loading PDF link image...")
             doc.addPage()
