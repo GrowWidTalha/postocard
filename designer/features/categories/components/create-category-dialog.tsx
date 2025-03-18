@@ -20,7 +20,7 @@ const categorySchema = z.object({
     designType: z.nativeEnum(DesignType),
 })
 
-const CreateCategoryDialog = ({ children }: { children: React.ReactNode}) => {
+const CreateCategoryDialog = ({ children }: { children: React.ReactNode }) => {
     const [open, setOpen] = useState(false)
     const form = useForm<z.infer<typeof categorySchema>>({
         resolver: zodResolver(categorySchema),
@@ -69,7 +69,7 @@ const CreateCategoryDialog = ({ children }: { children: React.ReactNode}) => {
                             name="designType"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Design Type</FormLabel>
+                                    <FormLabel>Grand Category</FormLabel>
                                     <FormControl>
                                         <div className='flex flex-col space-y-2'>
                                             {Object.values(DesignType).map((type) => (

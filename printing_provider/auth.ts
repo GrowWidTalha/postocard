@@ -45,6 +45,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         });
       }
 
+      await db.twoFactorConfirmation.create({
+        data: {
+          userId: user?.id!,
+        },
+      });
+
       return true;
     },
     async session({ token, session }) {

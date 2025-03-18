@@ -44,6 +44,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           where: { id: twoFactorConfirmation.id },
         });
       }
+      await db.twoFactorConfirmation.create({
+        data: {
+          userId: user?.id!,
+        },
+      });
 
       return true;
     },
