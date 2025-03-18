@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/spinner'
 import { UploadDropzone } from '@/lib/uploadthing'
 import { createSubCategory } from '../actions/category.actions'
+import { toast } from 'sonner'
 
 const subcategorySchema = z.object({
     name: z.string(),
@@ -33,8 +34,9 @@ const CreateSubCategoryDialog = ({ categoryId, children }: { categoryId: string;
             return res
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["categories"] })
+            toast.success("Subcategory Created successfull")
             setOpen(false)
+            queryClient.invalidateQueries({ queryKey: ["categories"] })
         }
     })
 
@@ -43,7 +45,7 @@ const CreateSubCategoryDialog = ({ categoryId, children }: { categoryId: string;
     }
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger>{children}</DialogTrigger>
             <DialogContent>
                 <DialogTitle>Add Subcategory</DialogTitle>
