@@ -74,7 +74,7 @@ export const createDesign = async (
         userId: auth.id!,
       },
     });
-
+console.log(design)
     return {
       data: design,
       error: null,

@@ -14,13 +14,14 @@ import { Spinner } from '@/components/spinner'
 import { DesignType } from '@prisma/client'
 import { createCategory } from '../actions/category.actions'
 import { UploadDropzone } from '@/lib/uploadthing'
+import { toast } from 'sonner'
 
 const categorySchema = z.object({
     name: z.string(),
     designType: z.nativeEnum(DesignType),
 })
 
-const CreateCategoryDialog = ({ children }: { children: React.ReactNode}) => {
+const CreateCategoryDialog = ({ children }: { children: React.ReactNode }) => {
     const [open, setOpen] = useState(false)
     const form = useForm<z.infer<typeof categorySchema>>({
         resolver: zodResolver(categorySchema),
@@ -30,26 +31,29 @@ const CreateCategoryDialog = ({ children }: { children: React.ReactNode}) => {
     const { mutate, isPending } = useMutation({
         mutationFn: async (values: z.infer<typeof categorySchema>) => {
             const res = await createCategory(values.name, values.designType)
-            setOpen(false)
             return res
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["categories"] })
+            form.reset()
+            toast.success("Category Created Successfully")
             setOpen(false)
+
+            queryClient.invalidateQueries({ queryKey: ["categories"] })
         }
     })
 
     const onSubmit = (values: z.infer<typeof categorySchema>) => {
         mutate(values)
+
     }
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger>{children}</DialogTrigger>
             <DialogContent>
                 <DialogTitle>Add Category</DialogTitle>
                 <Form {...form}>
-                    <form className='space-y-6' onSubmit={e => { e.preventDefault(); onSubmit(form.getValues()) }}>
+                    <form className='space-y-6' onSubmit={form.handleSubmit(onSubmit)}>
                         <FormField
                             control={form.control}
                             name="name"
@@ -69,7 +73,7 @@ const CreateCategoryDialog = ({ children }: { children: React.ReactNode}) => {
                             name="designType"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Design Type</FormLabel>
+                                    <FormLabel>Grand Category</FormLabel>
                                     <FormControl>
                                         <div className='flex flex-col space-y-2'>
                                             {Object.values(DesignType).map((type) => (
@@ -85,7 +89,7 @@ const CreateCategoryDialog = ({ children }: { children: React.ReactNode}) => {
                             )}
                         />
                         <DialogFooter>
-                            <Button type="button" onClick={form.handleSubmit(onSubmit)} disabled={isPending}>
+                            <Button type="submit" disabled={isPending}>
                                 {isPending && <Spinner size={"small"} className="text-white" />}
                                 Add Category
                             </Button>
