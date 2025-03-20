@@ -30,33 +30,26 @@ const Page = () => {
   }
 
   return (
-    <div className="p-4 md:p-6 min-h-screen bg-gray-50">
-      <div className="bg-white shadow-lg rounded-lg overflow-hidden max-w-6xl mx-auto">
-        <div className="flex flex-col lg:flex-row">
-          {/* Image Section - Fixed on large screens */}
-          <div className="w-full lg:w-1/2 lg:sticky lg:top-0">
-            <div className="relative w-full pb-[56.25%]"> {/* 16:9 aspect ratio */}
-              <img
-                className="absolute top-0 left-0 w-full h-full object-cover"
-                src={blog?.imageUrl || "https://via.placeholder.com/600x400"}
-                alt={blog?.title || "Blog Image"}
-              />
-            </div>
-          </div>
+    <div className="min-h-screen w-full p-4 py-2 bg-white rounded-lg shadow-lg">
+      <div className="text-center py-3 border-b border-gray-300">
+        <h1 className="text-4xl mt-2 font-serif font-semibold pt-1">{blog?.title}</h1>
+      </div>
 
-          {/* Content Section - Scrollable */}
-          <div className="w-full lg:w-1/2 p-6 lg:p-8 lg:overflow-y-auto">
-            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-              {blog?.title}
-            </h1>
-            <div className="prose prose-lg max-w-none text-gray-600">
-              {blog?.content && parse(blog.content)}
-            </div>
-            <div className="mt-6 flex items-center text-sm text-gray-500">
-              <span>By {blog?.author}</span>
-              <span className="mx-2">•</span>
-              <span>{blog?.createdAt ? new Date(blog.createdAt).toLocaleDateString() : "No date available"}</span>
-            </div>
+      <div className="flex flex-wrap lg:flex-nowrap gap-4 py-4">
+        <img
+          className="w-full lg:w-3/12 h-full object-cover rounded-md"
+          src={blog?.imageUrl || "https://via.placeholder.com/600x400"}
+          alt={blog?.title || "Blog Image"}
+        />
+
+        <div className="flex-1 p-4">
+          <div className="text-gray-700 px-2">
+            {blog?.content && parse(blog.content)}
+          </div>
+          <div className="flex justify-between items-center mt-6 text-gray-500">
+            <span>By {blog?.author}</span>
+            <span className="">•</span>
+            <span>{blog?.createdAt ? new Date(blog.createdAt).toLocaleDateString() : "No date available"}</span>
           </div>
         </div>
       </div>
@@ -65,3 +58,4 @@ const Page = () => {
 };
 
 export default Page;
+
