@@ -213,6 +213,8 @@ const PageContent = ({
       return (
         <img src={design.thumbnailUrl || "/placeholder.svg"} alt="Thumbnail" className="w-full h-full object-contain" />
       )
+
+      
     case 1:
       return (
         <img src={design.pdfLink || "/placeholder.svg"} alt="Design PDF" className="w-full h-full object-contain" />
@@ -228,7 +230,7 @@ const PageContent = ({
           canvasData={canvasData}
           setCanvasData={setCanvasData}
         />
-      )
+      ) 
     case 3:
       return (
         <div className="flex flex-col items-center">
@@ -352,7 +354,7 @@ const PageIndicator = ({ pageIndex }: { pageIndex: number }) => {
         <motion.div
           key={idx}
           className={cn(
-            "w-2 h-2 rounded-full transition-colors duration-300",
+            " rounded-full transition-colors duration-300",
             pageIndex === idx ? "bg-pink-500" : "bg-pink-200",
           )}
           whileHover={{ scale: 1.2 }}
@@ -433,7 +435,7 @@ const DesignPageClient = ({ design }: { design: Design }) => {
             {/* Card Container */}
             <Card className="w-full md:w-[280px] lg:w-[320px] mx-auto shadow-2xl hover:shadow-3xl transition-shadow">
               <CardContent className="p-0">
-                <motion.div className="relative overflow-hidden rounded-lg bg-white" style={{ aspectRatio: "5 / 7" }}>
+                <motion.div className="relative overflow-hidden  bg-white" style={{ aspectRatio: "5/7" }}>
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={pageIndex}
@@ -441,7 +443,7 @@ const DesignPageClient = ({ design }: { design: Design }) => {
                       animate={{ rotateY: 0 }}
                       exit={{ rotateY: -90 }}
                       transition={{ duration: 0.4, ease: "easeInOut" }}
-                      className="w-full h-full"
+                      className="w-full"
                     >
                       <PageContent
                         pageIndex={pageIndex}

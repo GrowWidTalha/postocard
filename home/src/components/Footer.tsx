@@ -12,22 +12,28 @@ const Footer: React.FC = () => {
                     <p>
                     Address: 2307 Corry Crest Circle ,Katy, TX-77493 USA</p>
                     <p>Phone Number:(346) 479 0233</p>
+                    <p>Email: sales@postocard.com</p>
                     
                 </section>
 
                 {/* Navigation */}
                 <nav className="w-full md:w-auto block">
-                    <h4 className="font-semibold text-lg">Navbar</h4>
+                    
                     <ul className="space-y-2 text-gray-600">
+                        <Link href={"/"}>
                         <li>Home</li>
-                        <li>Cradz</li>
+                        </Link>
+                        <Link href={"/Cards"}>
+                        <li>Crads</li>
+                        </Link>
+                        <Link href={"/blog"}>
                         <li>Blog</li>
+                        </Link>
                     </ul>
                 </nav>
 
                 {/* Help */}
                 <nav className="w-full md:w-auto block">
-                    <h4 className="font-semibold text-lg">Help</h4>
                     <ul className="space-y-2 text-gray-600">
                         <Link href={"/faq"}>
                             <li>FAQs</li>
