@@ -51,7 +51,6 @@ const OrderDetailsSheet = ({
     queryKey: ["users", UserRole.PRINTING_PROVIDER],
     queryFn: async () => {
       const designers = await getUsersByRole(UserRole.PRINTING_PROVIDER)
-      console.log(designers)
 
       return designers
     },

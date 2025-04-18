@@ -1,22 +1,27 @@
 "use client"
 
 import type React from "react"
-
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import {
-    getAllCategories,
-    getSubCategoriesByCategory,
+    getCategories,
+    getSubCategoriesById,
     deleteCategory,
     deleteSubCategory,
 } from "@/features/categories/actions/category.actions"
-import type { DesignCategory } from "@prisma/client"
+import type { DesignCategory, SubCategory } from "@prisma/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChevronDown, ChevronUp, Trash2, Plus } from "lucide-react"
 import CreateSubCategoryDialog from "@/features/categories/components/create-subcategory-dialog"
 import { Spinner } from "@/components/spinner"
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import {
+    Dialog,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog"
 import EmptyState from "@/components/empty-state"
 import CreateCategoryDialog from "@/features/categories/components/create-category-dialog"
 
@@ -28,37 +33,46 @@ const CategoryPageClient = ({
     const [expandedCategory, setExpandedCategory] = useState<string | null>(null)
     const [deleteCategoryId, setDeleteCategoryId] = useState<string | null>(null)
     const [deleteSubCategoryId, setDeleteSubCategoryId] = useState<string | null>(null)
+    const [isDeletingCategory, setIsDeletingCategory] = useState(false)
+    const [isDeletingSubCategory, setIsDeletingSubCategory] = useState(false)
 
     const queryClient = useQueryClient()
 
     const { data: categoriesData, isLoading: categoriesLoading } = useQuery({
         queryKey: ["categories"],
-        queryFn: () => getAllCategories(),
+        queryFn: async () => {
+            const response = await getCategories()
+            // Assuming the response format is { data: { data: DesignCategory[] } }
+            return response.data.data
+        },
+        // Uncomment initialData and refetch options if needed:
         initialData: initialCategories,
-        refetchOnMount: true,
+        refetchOnMount: false,
         refetchOnWindowFocus: false,
     })
 
     const { data: subCategoriesData, isLoading: subCategoriesLoading } = useQuery({
         queryKey: ["subCategories", expandedCategory],
-        queryFn: () => getSubCategoriesByCategory(expandedCategory as string),
+        queryFn: () => getSubCategoriesById(expandedCategory as string),
         enabled: !!expandedCategory,
         refetchOnWindowFocus: false,
     })
 
-    const { mutate: deleteCategoryMutation, isPending: deleteCategoryLoading } = useMutation({
+    // Mutations for delete actions using local state for loading control
+    const deleteCategoryMutation = useMutation({
         mutationFn: async (categoryId: string) => {
-            await deleteCategory(categoryId)
+            return await deleteCategory(categoryId)
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["categories"] })
+            // Optionally, you can also invalidate subcategories query if needed:
             setDeleteCategoryId(null)
         },
     })
 
-    const { mutate: deleteSubCategoryMutation, isPending: deleteSubCategoryLoading } = useMutation({
+    const deleteSubCategoryMutation = useMutation({
         mutationFn: async (subCategoryId: string) => {
-            await deleteSubCategory(subCategoryId)
+            return await deleteSubCategory(subCategoryId)
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["categories"] })
@@ -81,37 +95,41 @@ const CategoryPageClient = ({
         setDeleteSubCategoryId(subCategoryId)
     }
 
-    const handleConfirmDeleteCategory = () => {
+    const handleConfirmDeleteCategory = async () => {
         if (deleteCategoryId) {
-            deleteCategoryMutation(deleteCategoryId)
+            try {
+                setIsDeletingCategory(true)
+                await deleteCategoryMutation.mutateAsync(deleteCategoryId)
+            } catch (err) {
+                console.error("Category deletion failed:", err)
+            } finally {
+                setIsDeletingCategory(false)
+            }
         }
     }
 
-    const handleConfirmDeleteSubCategory = () => {
+    const handleConfirmDeleteSubCategory = async () => {
         if (deleteSubCategoryId) {
-            deleteSubCategoryMutation(deleteSubCategoryId)
+            try {
+                setIsDeletingSubCategory(true)
+                await deleteSubCategoryMutation.mutateAsync(deleteSubCategoryId)
+            } catch (err) {
+                console.error("Subcategory deletion failed:", err)
+            } finally {
+                setIsDeletingSubCategory(false)
+            }
         }
     }
 
     return (
         <div className="container mx-auto p-4 pb-20 relative">
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-bold">Categories</h1>
-                <CreateCategoryDialog>
-                    <Button className="flex items-center gap-2">
-                        <Plus className="h-4 w-4" />
-                        New Category
-                    </Button>
-                </CreateCategoryDialog>
-            </div>
-
             {categoriesLoading ? (
                 <div className="flex justify-center items-center h-64">
                     <Spinner size="large" />
                 </div>
             ) : categoriesData && categoriesData.length > 0 ? (
                 <div className="space-y-4">
-                    {categoriesData.map((category) => (
+                    {categoriesData.map((category: DesignCategory) => (
                         <Card
                             key={category.id}
                             className="w-full overflow-hidden border-muted shadow-sm hover:shadow transition-all duration-200"
@@ -174,7 +192,7 @@ const CategoryPageClient = ({
                                             </div>
                                         ) : subCategoriesData && subCategoriesData.length > 0 ? (
                                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                                {subCategoriesData.map((subCategory) => (
+                                                {subCategoriesData.map((subCategory: SubCategory) => (
                                                     <Card
                                                         key={subCategory.id}
                                                         className="overflow-hidden border border-muted bg-card hover:shadow-sm transition-all duration-200"
@@ -186,7 +204,9 @@ const CategoryPageClient = ({
                                                                     variant="ghost"
                                                                     size="icon"
                                                                     className="h-8 w-8 text-destructive hover:bg-destructive/10 hover:text-destructive"
-                                                                    onClick={(e) => handleDeleteSubCategory(e, subCategory.id)}
+                                                                    onClick={(e) =>
+                                                                        handleDeleteSubCategory(e, subCategory.id)
+                                                                    }
                                                                 >
                                                                     <Trash2 className="h-4 w-4" />
                                                                     <span className="sr-only">Delete</span>
@@ -194,6 +214,7 @@ const CategoryPageClient = ({
                                                             </div>
                                                             <div className="flex items-center gap-2">
                                                                 <span className="text-sm text-muted-foreground px-2 py-1 bg-muted rounded-md">
+                                                                    {/* @ts-ignore */}
                                                                     {subCategory.designs?.length || 0} designs
                                                                 </span>
                                                             </div>
@@ -203,9 +224,11 @@ const CategoryPageClient = ({
                                             </div>
                                         ) : (
                                             <div className="flex flex-col items-center justify-center p-8 bg-muted/30 rounded-lg">
-                                                <p className="text-muted-foreground mb-4">No subcategories found</p>
+                                                <p className="text-muted-foreground mb-4">
+                                                    No subcategories found
+                                                </p>
                                                 <CreateSubCategoryDialog categoryId={category.id}>
-                                                    <Button variant="outline" >
+                                                    <Button variant="outline">
                                                         <Plus className="h-4 w-4 mr-2" />
                                                         Add First Subcategory
                                                     </Button>
@@ -244,14 +267,17 @@ const CategoryPageClient = ({
             </div>
 
             {/* Delete Category Dialog */}
-            <Dialog open={!!deleteCategoryId} onOpenChange={(open) => !open && setDeleteCategoryId(null)}>
+            <Dialog
+                open={!!deleteCategoryId}
+                onOpenChange={(open) => !open && setDeleteCategoryId(null)}
+            >
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>Confirm Delete</DialogTitle>
                     </DialogHeader>
                     <p className="text-muted-foreground">
-                        Are you sure you want to delete this category? This action cannot be undone and will also delete all
-                        associated subcategories.
+                        Are you sure you want to delete this category? This action cannot be
+                        undone and will also delete all associated subcategories.
                     </p>
                     <DialogFooter>
                         <Button variant="outline" onClick={() => setDeleteCategoryId(null)}>
@@ -260,24 +286,28 @@ const CategoryPageClient = ({
                         <Button
                             variant="destructive"
                             onClick={handleConfirmDeleteCategory}
-                            disabled={deleteCategoryLoading}
+                            disabled={isDeletingCategory}
                             className="gap-2"
                         >
-                            {deleteCategoryLoading && <Spinner size="small" />}
-                            {deleteCategoryLoading ? "Deleting..." : "Delete Category"}
+                            {isDeletingCategory && <Spinner size="small" />}
+                            {isDeletingCategory ? "Deleting..." : "Delete Category"}
                         </Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
 
             {/* Delete Subcategory Dialog */}
-            <Dialog open={!!deleteSubCategoryId} onOpenChange={(open) => !open && setDeleteSubCategoryId(null)}>
+            <Dialog
+                open={!!deleteSubCategoryId}
+                onOpenChange={(open) => !open && setDeleteSubCategoryId(null)}
+            >
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>Confirm Delete</DialogTitle>
                     </DialogHeader>
                     <p className="text-muted-foreground">
-                        Are you sure you want to delete this subcategory? This action cannot be undone.
+                        Are you sure you want to delete this subcategory? This action cannot be
+                        undone.
                     </p>
                     <DialogFooter>
                         <Button variant="outline" onClick={() => setDeleteSubCategoryId(null)}>
@@ -286,11 +316,11 @@ const CategoryPageClient = ({
                         <Button
                             variant="destructive"
                             onClick={handleConfirmDeleteSubCategory}
-                            disabled={deleteSubCategoryLoading}
+                            disabled={isDeletingSubCategory}
                             className="gap-2"
                         >
-                            {deleteSubCategoryLoading && <Spinner size="small" />}
-                            {deleteSubCategoryLoading ? "Deleting..." : "Delete Subcategory"}
+                            {isDeletingSubCategory && <Spinner size="small" />}
+                            {isDeletingSubCategory ? "Deleting..." : "Delete Subcategory"}
                         </Button>
                     </DialogFooter>
                 </DialogContent>

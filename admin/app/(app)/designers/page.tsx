@@ -7,28 +7,28 @@ import { getUsersByRole } from "@/features/peoples/actions/people";
 import EmptyState from "@/components/empty-state";
 
 const DesignersPage = async () => {
-  const designers = await getUsersByRole("DESIGNER");
-  return (
-    <DashboardPage
-      title="Designers"
-      cta={<CreateUserModal buttonLabel="Add Designer" role="DESIGNER" />}
-    >
-      {designers && designers?.length < 1  ? (
-        <EmptyState
-          heading="No Designers found"
-          subHeading="No designers found. Create one now"
-          action={
-            <CreateUserModal buttonLabel="Add Designer" role="DESIGNER" />
-          }
-        />
-      ) : (
-        <DesignerPageContent
-         designers={designers}
+    const designers = await getUsersByRole("DESIGNER");
+    return (
+        <DashboardPage
+            title="Designers"
+            cta={<CreateUserModal buttonLabel="Add Designer" role="DESIGNER" />}
+        >
+            {designers && designers?.data.length < 1 ? (
+                <EmptyState
+                    heading="No Designers found"
+                    subHeading="No designers found. Create one now"
+                    action={
+                        <CreateUserModal buttonLabel="Add Designer" role="DESIGNER" />
+                    }
+                />
+            ) : (
+                <DesignerPageContent
+                    designers={designers}
 
-         />
-      )}
-    </DashboardPage>
-  );
+                />
+            )}
+        </DashboardPage>
+    );
 };
 
 export default DesignersPage;

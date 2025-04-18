@@ -1,44 +1,53 @@
-"use server";
-import { db } from "@/db";
 import { OrderStatus } from "@prisma/client";
 
+const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL + "/api/orders";
+
 export const getAllOrders = async () => {
-    try {
-      const data = await db.order.findMany({ include: { user: true } });
-      return  data
-    } catch (error: any) {
-      console.error("Error while fetching orders: ", error);
-    }
-  };
+  try {
+    const res = await fetch(API_BASE);
+    const json = await res.json();
+    return {
+      data: json.data,
+      success: json.success && res.ok,
+      error: json.error || null,
+    };
+  } catch (error: any) {
+    console.error("Error fetching orders:", error);
+    return { data: null, success: false, error: error.message };
+  }
+};
 
 export const deleteOrder = async (id: string) => {
   try {
-    const res = await db.order.delete({
-      where: {
-        id: id,
-      },
-    });
-
-    return "Deleted Successfully";
-  } catch (error) {
-    console.log("error deleting order: ", error);
+    const res = await fetch(`${API_BASE}/${id}`, { method: "DELETE" });
+    const json = await res.json();
+    return {
+      data: json.data,
+      success: json.success && res.ok,
+      error: json.error || null,
+    };
+  } catch (error: any) {
+    console.error("Error deleting order:", error);
+    return { data: null, success: false, error: error.message };
   }
 };
 
 export const assignOrder = async (orderId: string, assigneeId: string) => {
   try {
-    const res = await db.order.update({
-      where: {
-        id: orderId,
-      },
-      data: {
-        assigneeId: assigneeId,
-      },
+    const res = await fetch(`${API_BASE}/${orderId}/assign`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ assigneeId }),
     });
-
-    return "Assigneed Successfully";
-  } catch (error) {
-    console.log("error deleting order: ", error);
+    const json = await res.json();
+    return {
+      data: json.data,
+      success: json.success && res.ok,
+      error: json.error || null,
+    };
+  } catch (error: any) {
+    console.error("Error assigning order:", error);
+    return { data: null, success: false, error: error.message };
   }
 };
 
@@ -47,17 +56,19 @@ export const updateOrderStatus = async (
   status: OrderStatus
 ) => {
   try {
-    const res = await db.order.update({
-      where: {
-        id: orderId,
-      },
-      data: {
-        status: status,
-      },
+    const res = await fetch(`${API_BASE}/${orderId}/status`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status }),
     });
-
-    return "Status updated Successfully";
-  } catch (error) {
-    console.log("error deleting order: ", error);
+    const json = await res.json();
+    return {
+      data: json.data,
+      success: json.success && res.ok,
+      error: json.error || null,
+    };
+  } catch (error: any) {
+    console.error("Error updating order status:", error);
+    return { data: null, success: false, error: error.message };
   }
 };

@@ -10,6 +10,8 @@ import EmptyState from "@/components/empty-state";
 const BlogsPage = async () => {
   const blogs = await getAllBlogs();
 
+  console.log(blogs)
+
   if (!blogs)
     return (
       <div className="w-full h-screen flex items-center justify-center">
