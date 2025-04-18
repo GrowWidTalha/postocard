@@ -16,7 +16,7 @@ const page = () => {
     We will send a free replacement of the same card to the same address.</p>
     <h1 className='font-semibold'>How to Request a Replacement</h1>
     <p>To file a claim for a replacement card, please visit:
-    <span className='font-semibold'>🔗 [Insert Link to Replacement Card Form]</span></p>
+    <span className='font-semibold'>🔗 [link here]</span></p>
     <p>You will need to provide:</p>
     <li>Your <span className='font-semibold'>Order Number</span></li>
     <li>A <span className='font-semibold'>photo</span>of the damaged card (if applicable)</li>
