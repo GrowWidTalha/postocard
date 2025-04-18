@@ -77,7 +77,6 @@ export default function CustomImageUploader({
     const handleClick = () => {
         fileInputRef.current?.click()
     }
-    console.log(value)
     return (
         <div className={cn("w-full", className)}>
             <input

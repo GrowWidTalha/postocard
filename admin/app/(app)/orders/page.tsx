@@ -4,18 +4,18 @@ import React from 'react'
 import OrdersClient from './OrdersClient'
 import { Spinner } from '@/components/spinner'
 
-const OrdersPage = async() => {
+const OrdersPage = async () => {
     const orders = await getAllOrders()
     console.log(orders)
-    if(!orders){
+    if (!orders) {
         return <Spinner size={"large"} />
     }
-  return (
-    <DashboardPage title='Orders' >
-        {/* @ts-ignore */}
-        <OrdersClient orders={orders} />
-    </DashboardPage>
-  )
+    return (
+        <DashboardPage title='Orders' >
+            {/* @ts-ignore */}
+            <OrdersClient orders={orders.data} />
+        </DashboardPage>
+    )
 }
 
 export default OrdersPage

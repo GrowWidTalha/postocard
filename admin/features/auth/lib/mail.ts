@@ -4,7 +4,6 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const sendVerificationEmail = async (email: string, token: string) => {
   const confirmationLink = `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/new-verification?token=${token}`;
-  console.log("sending email");
   await resend.emails.send({
     from: "authtoolkit@talhaali.xyz",
     to: email,
@@ -36,7 +35,6 @@ export const sendTwoFactorEmail = async (token: string, email: string) => {
                 <p>2FA Code: ${token}</p>
                 `,
     });
-    console.log(mail)
   } catch (error) {
     console.log(error);
   }

@@ -18,7 +18,7 @@ import CategoryDropDown from "./category-dropdown"
 import SubCategoryDropDown from "./subCategory-dropdown"
 import { createDesign, updateDesign } from "../actions/design.action"
 import { useCurrentUser } from "@/features/auth/hooks/use-current-user"
-import { getCategories, getSubCategoriesById } from "../actions/categories.actions"
+import { getCategories, getSubCategoriesById } from "@/features/categories/actions/category.actions"
 import { Skeleton } from "@/components/ui/skeleton"
 import type { Design, DesignType } from "@prisma/client"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
@@ -67,8 +67,8 @@ export const DesignForm: React.FC<FormProps> = ({ type, design }) => {
                     thumbnailUploadId: values.thumbnailUploadId,
                     type: values.type,
                     published: values.published,
+                    user: user,
                 })
-                console.log({ res })
                 if (res?.error) throw new Error(res.error)
                 return res
             } else {
@@ -86,7 +86,6 @@ export const DesignForm: React.FC<FormProps> = ({ type, design }) => {
                     createdBy: design?.createdBy!,
                     published: values.published,
                 })
-                console.log({ res })
                 if (res?.error) throw new Error(res.error)
                 return res
             }
@@ -110,7 +109,7 @@ export const DesignForm: React.FC<FormProps> = ({ type, design }) => {
         queryKey: ["categories"],
         queryFn: async () => {
             const res = await getCategories(form.getValues("type") as DesignType)
-            return res.data
+            return res.data.data
         },
     })
 

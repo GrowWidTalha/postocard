@@ -1,19 +1,13 @@
-"use server";
-
-import { db } from "@/db";
+const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
 
 export const getAllBlogs = async () => {
   try {
-    const blogs = await db.blog.findMany();
+    const res = await fetch(`${API_URL}/api/blogs`);
+    const data = await res.json();
 
-    return {
-      data: blogs,
-      error: null,
-      success: true,
-    };
+    return data
   } catch (error: any) {
     console.error(error);
-
     return {
       data: null,
       error: error.message,
@@ -24,17 +18,10 @@ export const getAllBlogs = async () => {
 
 export const getBlogById = async (id: string) => {
   try {
-    const blog = await db.blog.findUnique({
-      where: {
-        id,
-      },
-    });
+    const res = await fetch(`${API_URL}/api/blogs/${id}`);
+    const data = await res.json();
 
-    return {
-      data: blog,
-      error: null,
-      success: true,
-    };
+    return data
   } catch (error: any) {
     console.error(error);
     return {
@@ -61,22 +48,17 @@ export const createBlog = async ({
   published: boolean;
 }) => {
   try {
-    const blog = await db.blog.create({
-      data: {
-        title,
-        content,
-        imageUrl,
-        slug,
-        author,
-        published
+    const res = await fetch(`${API_URL}/api/blogs`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
+      body: JSON.stringify({ title, content, imageUrl, slug, author, published }),
     });
 
-    return {
-      data: blog,
-      error: null,
-      success: true,
-    };
+    const data = await res.json();
+
+    return data
   } catch (error: any) {
     console.error(error);
     return {
@@ -103,24 +85,17 @@ export const updateBlog = async ({
   id: string;
 }) => {
   try {
-    const blog = await db.blog.update({
-      where: {
-        id: id,
+    const res = await fetch(`${API_URL}/api/blogs/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
       },
-      data: {
-        title,
-        content,
-        imageUrl,
-        slug,
-        published
-      },
+      body: JSON.stringify({ title, content, imageUrl, slug, published }),
     });
 
-    return {
-      data: blog,
-      error: null,
-      success: true,
-    };
+    const data = await res.json();
+
+    return data
   } catch (error: any) {
     console.error(error);
     return {
@@ -133,17 +108,13 @@ export const updateBlog = async ({
 
 export const deleteBlog = async (id: string) => {
   try {
-    const blog = await db.blog.delete({
-      where: {
-        id,
-      },
+    const res = await fetch(`${API_URL}/api/blogs/${id}`, {
+      method: "DELETE",
     });
 
-    return {
-      data: blog,
-      error: null,
-      success: true,
-    };
+    const data = await res.json();
+
+    return data
   } catch (error: any) {
     console.error(error);
     return {
@@ -156,20 +127,13 @@ export const deleteBlog = async (id: string) => {
 
 export const publishBlog = async (id: string) => {
   try {
-    const blog = await db.blog.update({
-      where: {
-        id,
-      },
-      data: {
-        published: true,
-      },
+    const res = await fetch(`${API_URL}/api/blogs/${id}/publish`, {
+      method: "POST",
     });
 
-    return {
-      data: blog,
-      error: null,
-      success: true,
-    };
+    const data = await res.json();
+
+    return data
   } catch (error: any) {
     console.error(error);
     return {
@@ -182,20 +146,13 @@ export const publishBlog = async (id: string) => {
 
 export const unpublishBlog = async (id: string) => {
   try {
-    const blog = await db.blog.update({
-      where: {
-        id,
-      },
-      data: {
-        published: false,
-      },
+    const res = await fetch(`${API_URL}/api/blogs/${id}/unpublish`, {
+      method: "POST",
     });
 
-    return {
-      data: blog,
-      error: null,
-      success: true,
-    };
+    const data = await res.json();
+
+    return data
   } catch (error: any) {
     console.error(error);
     return {

@@ -31,14 +31,23 @@ const CreateCategoryDialog = ({ children }: { children: React.ReactNode }) => {
     const { mutate, isPending } = useMutation({
         mutationFn: async (values: z.infer<typeof categorySchema>) => {
             const res = await createCategory(values.name, values.designType)
-            return res
+            if (res.success) {
+                return res.data
+            }
+
+            if (res.error) {
+                console.log(res.error)
+                throw new Error(res.error)
+            }
         },
         onSuccess: () => {
             form.reset()
             toast.success("Category Created Successfully")
             setOpen(false)
-
             queryClient.invalidateQueries({ queryKey: ["categories"] })
+        },
+        onError: (error) => {
+            toast.error("Failed to create Category " + error.message,)
         }
     })
 
