@@ -1,95 +1,133 @@
-"use server";
+// "use server";
+
+// import * as z from "zod";
+// import AuthError from "next-auth";
+
+// import { signIn } from "@/auth";
+// import { generateTwoFactorToken, generateVerificationToken } from "../lib/tokens";
+// import { sendTwoFactorEmail, sendVerificationEmail } from "../lib/mail";
+// import { LoginSchema } from "../schemas";
+// import { getTwoFactorTokenByEmail } from "../data/two-factor-token";
+// import { getTwoFactorConfirmationByUserId } from "../data/two-factor-confirmation";
+// import { getUserByEmail } from "../data/user";
+// import { DEFAULT_LOGIN_REDIRECT } from "../../../routes";
+// import { db } from "../../../db";
+// export const login = async (values: z.infer<typeof LoginSchema>) => {
+//   const validatedFields = LoginSchema.safeParse(values);
+//   if (!validatedFields.success) {
+//     return { error: "Invalid fields" };
+//   }
+//   const { email, password, code } = validatedFields.data;
+//   const existingUser = await getUserByEmail(email);
+//   console.log(existingUser)
+//   if (!existingUser || !existingUser.email || !existingUser.password) {
+//     return { error: "Email doesn't exist" };
+//   }
+//     if (!existingUser.emailVerified) {
+//       const verificationToken = await generateVerificationToken(
+//         existingUser.email
+//       );
+//       await sendVerificationEmail(
+//         verificationToken.email,
+//         verificationToken.token
+//       );
+//       return { success: "Confirmation email sent" };
+//     }
+
+
+//   if (existingUser.isTwoFactorEnabled && existingUser.email) {
+//     if (code) {
+//       const token = await getTwoFactorTokenByEmail(existingUser.email);
+//       if (!token) return { error: "Invalid code" };
+
+//       if (token.token !== code) return { error: "Invalid code!" };
+
+//       const hasExpired = new Date(token.expires) < new Date();
+
+//       if (hasExpired) return { error: "Code Expired" };
+
+//       await db.twoFactorToken.delete({ where: { id: token.id } });
+
+//       console.log("Authentication successful")
+//       const existingTwoFactorConfirmation =
+//         await getTwoFactorConfirmationByUserId(existingUser.id);
+
+//       if (existingTwoFactorConfirmation) {
+//         await db.twoFactorConfirmation.delete({
+//           where: { id: existingTwoFactorConfirmation.id },
+//         });
+//       }
+
+//       await db.twoFactorConfirmation.create({
+//         data: {
+//           userId: existingUser.id,
+//         },
+//       });
+//     } else {
+//       const twoFactorToken = await generateTwoFactorToken(email);
+//       console.log(twoFactorToken.token);
+//       const email2 = await sendTwoFactorEmail(twoFactorToken.token, twoFactorToken.email);
+//       console.log(email2);
+//       return { twoFactor: true };
+//     }
+//   }
+
+//   try {
+//     await signIn("credentials", {
+//       email,
+//       password,
+//       redirectTo: DEFAULT_LOGIN_REDIRECT,
+//     });
+//     return { success: "success" };
+//   } catch (error: any) {
+//     if (error instanceof AuthError) {
+//         // @ts-ignore
+//       switch (error.type) {
+//         case "CredentialsSignin":
+//           return { error: "Invalid Credentials" };
+//           break;
+//         default:
+//           return { error: "Something Went Wrong" };
+//       }
+//     }
+//     throw error;
+//   }
+// };
 
 import * as z from "zod";
-import AuthError from "next-auth";
+import { LoginSchema } from "@/features/auth/schemas";
+import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 
-import { signIn } from "@/auth";
-import { generateTwoFactorToken, generateVerificationToken } from "../lib/tokens";
-import { sendTwoFactorEmail, sendVerificationEmail } from "../lib/mail";
-import { LoginSchema } from "../schemas";
-import { getTwoFactorTokenByEmail } from "../data/two-factor-token";
-import { getTwoFactorConfirmationByUserId } from "../data/two-factor-confirmation";
-import { getUserByEmail } from "../data/user";
-import { DEFAULT_LOGIN_REDIRECT } from "../../../routes";
-import { db } from "../../../db";
 export const login = async (values: z.infer<typeof LoginSchema>) => {
-  const validatedFields = LoginSchema.safeParse(values);
-  if (!validatedFields.success) {
-    return { error: "Invalid fields" };
-  }
-  const { email, password, code } = validatedFields.data;
-  const existingUser = await getUserByEmail(email);
-  console.log(existingUser)
-  if (!existingUser || !existingUser.email || !existingUser.password) {
-    return { error: "Email doesn't exist" };
-  }
-    if (!existingUser.emailVerified) {
-      const verificationToken = await generateVerificationToken(
-        existingUser.email
-      );
-      await sendVerificationEmail(
-        verificationToken.email,
-        verificationToken.token
-      );
-      return { success: "Confirmation email sent" };
+  try {
+    const validatedFields = LoginSchema.safeParse(values);
+    if (!validatedFields.success) {
+      return { error: "Invalid fields" };
     }
 
+    const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(validatedFields.data),
+    });
 
-  if (existingUser.isTwoFactorEnabled && existingUser.email) {
-    if (code) {
-      const token = await getTwoFactorTokenByEmail(existingUser.email);
-      if (!token) return { error: "Invalid code" };
+    const data = await response.json();
 
-      if (token.token !== code) return { error: "Invalid code!" };
+    if (!response.ok) {
+      console.log("[LOGIN-ACTION] Backend error:", data.error);
+      return { error: data.error || "Something went wrong" };
+    }
 
-      const hasExpired = new Date(token.expires) < new Date();
-
-      if (hasExpired) return { error: "Code Expired" };
-
-      await db.twoFactorToken.delete({ where: { id: token.id } });
-
-      console.log("Authentication successful")
-      const existingTwoFactorConfirmation =
-        await getTwoFactorConfirmationByUserId(existingUser.id);
-
-      if (existingTwoFactorConfirmation) {
-        await db.twoFactorConfirmation.delete({
-          where: { id: existingTwoFactorConfirmation.id },
-        });
-      }
-
-      await db.twoFactorConfirmation.create({
-        data: {
-          userId: existingUser.id,
-        },
-      });
-    } else {
-      const twoFactorToken = await generateTwoFactorToken(email);
-      console.log(twoFactorToken.token);
-      const email2 = await sendTwoFactorEmail(twoFactorToken.token, twoFactorToken.email);
-      console.log(email2);
+    if (data.twoFactor) {
       return { twoFactor: true };
     }
-  }
 
-  try {
-    await signIn("credentials", {
-      email,
-      password,
-      redirectTo: DEFAULT_LOGIN_REDIRECT,
-    });
-    return { success: "success" };
-  } catch (error: any) {
-    if (error instanceof AuthError) {
-        // @ts-ignore
-      switch (error.type) {
-        case "CredentialsSignin":
-          return { error: "Invalid Credentials" };
-          break;
-        default:
-          return { error: "Something Went Wrong" };
-      }
-    }
-    throw error;
+    return { success: data.message || "Login successful" };
+
+  } catch (error) {
+    console.error("[LOGIN-ACTION] Unexpected error:", error);
+    return { error: "Something went wrong" };
   }
 };

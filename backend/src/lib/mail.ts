@@ -1,7 +1,7 @@
 import { UserRole } from "@prisma/client";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend("re_WWMNFFCq_JvNx83nnzfqUBwvsaPXyowt4")
 
 export const sendInvitationEmail = async (
     email: string,

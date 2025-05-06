@@ -2,9 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import routes from './routes/main';
 import morgan from "morgan"
-
+import "./config/config"
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8000;
 
 // Middleware
 app.use(cors());

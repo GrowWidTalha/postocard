@@ -1,3 +1,4 @@
+import Banner from '@/components/banner'
 import Hero from '@/components/Hero'
 
 import Middle from '@/components/Middle'
@@ -8,6 +9,7 @@ const page = () => {
     <div>
       <Hero/>
       <Middle/>
+      <Banner/>
     
     </div>
   )
