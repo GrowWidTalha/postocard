@@ -52,6 +52,8 @@ export const userController = {
       const randomPassword = Math.random().toString(36).slice(-8);
       const hashedPassword = await bcrypt.hash(randomPassword, 10);
 
+      console.log(randomPassword)
+
       const user = await db.user.create({
         data: {
           name,

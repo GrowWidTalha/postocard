@@ -23,6 +23,7 @@ export const sendInvitationEmail = async (
                     : "https://printing-provider.postocard.com/"
                 }">here</a> to login</`,
         });
+        console.log(mail)
     } catch (error) {
       console.error("Something went wrong sending the invitation email: ", error);
     }
