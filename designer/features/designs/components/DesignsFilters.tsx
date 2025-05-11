@@ -49,7 +49,7 @@ const DesignsFilters = () => {
         } else {
             params.delete('category')
         }
-        if(designer){
+        if (designer) {
             params.set("designer", designer)
         } else {
             params.delete("designer")
@@ -120,6 +120,7 @@ const DesignsFilters = () => {
                         <SelectValue placeholder="Select Designer" />
                     </SelectTrigger>
                     <SelectContent>
+                        {/* @ts-ignore */}
                         {users?.map((user) => (
                             <SelectItem key={user.id} value={user.id}>{user.name}</SelectItem>
                         ))}

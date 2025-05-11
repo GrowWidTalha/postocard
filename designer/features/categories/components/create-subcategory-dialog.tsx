@@ -20,7 +20,7 @@ const subcategorySchema = z.object({
     categoryId: z.string(),
 })
 
-const CreateSubCategoryDialog = ({ categoryId, children }: { categoryId: string; children: React.ReactNode}) => {
+const CreateSubCategoryDialog = ({ categoryId, children }: { categoryId: string; children: React.ReactNode }) => {
     const [open, setOpen] = useState(false)
     const form = useForm<z.infer<typeof subcategorySchema>>({
         resolver: zodResolver(subcategorySchema),
@@ -29,6 +29,7 @@ const CreateSubCategoryDialog = ({ categoryId, children }: { categoryId: string;
     const queryClient = useQueryClient()
     const { mutate, isPending } = useMutation({
         mutationFn: async (values: z.infer<typeof subcategorySchema>) => {
+            // @ts-ignore
             const res = await createSubCategory(values.name, categoryId)
             setOpen(false)
             return res

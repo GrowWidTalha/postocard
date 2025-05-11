@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { db } from "../db";
 import { Design, DesignType } from "@prisma/client";
 import { z } from "zod";
+import { getDesignsBySubCategoryService } from "../services/design.service"; // Adjust path if necessary
 
 const createDesignSchema = z.object({
   name: z.string().nonempty(),
@@ -139,6 +140,30 @@ export const designController = {
         error: "Something went wrong.",
         success: false,
       });
+    }
+  },
+
+  async getDesignsBySubCategory(req: Request, res: Response) {
+    try {
+      const { subCategoryId } = req.params;
+      if (!subCategoryId) {
+        return res.status(400).json({ message: 'Subcategory ID is required' });
+      }
+      const designs = await getDesignsBySubCategoryService(subCategoryId);
+      if (!designs || designs.length === 0) {
+        return res.status(404).json({ message: 'No designs found for this subcategory' });
+      }
+      return res.status(200).json(designs);
+    } catch (error: any) {
+      console.error(
+        "Error in getDesignsBySubCategoryController:",
+        error.message
+      );
+      // Check if the error is a known type or has a specific status code
+      if (error.message === 'Failed to fetch designs by subcategory') {
+        return res.status(500).json({ message: 'Failed to fetch designs' });
+      }
+      return res.status(500).json({ message: 'Internal server error' });
     }
   }
 };

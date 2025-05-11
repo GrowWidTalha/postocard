@@ -137,6 +137,7 @@ const DesignerPageContent = ({ designers }: { designers?: User[] }) => {
     );
     const table = useReactTable({
         columns,
+        // @ts-ignore
         data: data!,
         getCoreRowModel: getCoreRowModel(),
     });

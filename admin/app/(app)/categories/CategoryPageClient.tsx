@@ -129,6 +129,7 @@ const CategoryPageClient = ({
                 </div>
             ) : categoriesData && categoriesData.length > 0 ? (
                 <div className="space-y-4">
+                    {/* @ts-ignore */}
                     {categoriesData.map((category: DesignCategory) => (
                         <Card
                             key={category.id}

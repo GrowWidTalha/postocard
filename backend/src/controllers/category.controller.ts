@@ -1,31 +1,26 @@
 import { Request, Response } from "express";
-import { db } from "../db";
+import { db } from "../db"; // Restored db import for other methods
 import { DesignType } from "@prisma/client";
+import { getSubCategoriesByCategoryNameService, getAllCategoriesService } from "../services/category.service"; // Combined imports
 
 export const categoryController = {
     async getCategories(req: Request, res: Response) {
         try {
             const { type } = req.query;
-            console.log("done")
-            let categories
-            if(!type===undefined){
-                categories =  await db.designCategory.findMany({
-                    where: { designType: type as DesignType }
-                });
-            } else {
-                categories =  await db.designCategory.findMany();
-            }
-            console.log(categories)
+            // Validate type if necessary, or ensure it matches DesignType enum
+            const categories = await getAllCategoriesService(type as DesignType | undefined);
+
             res.status(200).json({
                 data: categories,
                 error: null,
                 success: true,
             });
         } catch (error: any) {
-
+            console.error("Error in getCategories controller:", error.message);
             res.status(500).json({
                 data: null,
-                error: error.message,
+                // Provide a more generic error message to the client
+                error: "Failed to fetch categories. Please try again later.",
                 success: false,
             });
         }
@@ -144,7 +139,28 @@ async deleteCategory(req: Request, res: Response) {
       console.log(error);
       res.status(500).json({ error: "Failed to delete subcategory" });
     }
+  },
+
+  async getSubCategoriesByCategoryNameController(req: Request, res: Response) {
+    try {
+      const { categoryName } = req.params;
+      if (!categoryName) {
+        return res.status(400).json({ message: 'Category name is required' });
+      }
+      const subCategories = await getSubCategoriesByCategoryNameService(categoryName);
+      if (!subCategories || subCategories.length === 0) {
+        return res.status(404).json({ message: 'No subcategories found for this category name' });
+      }
+      return res.status(200).json(subCategories);
+    } catch (error: any) {
+      console.error(
+        "Error in getSubCategoriesByCategoryNameController:",
+        error.message
+      );
+      if (error.message === 'Failed to fetch subcategories by category name') {
+        return res.status(500).json({ message: 'Failed to fetch subcategories' });
+      }
+      return res.status(500).json({ message: 'Internal server error' });
+    }
   }
-
-
 };

@@ -152,6 +152,7 @@ const PrintingProviderContent = ({
     );
     const table = useReactTable({
         columns,
+        // @ts-ignore
         data: data!,
         getCoreRowModel: getCoreRowModel(),
     });

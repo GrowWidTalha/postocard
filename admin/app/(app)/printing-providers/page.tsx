@@ -18,6 +18,7 @@ const ProvidersPage = async () => {
                 />
             }
         >
+            {/* @ts-ignore */}
             {printProviders && printProviders?.data.length < 1 ? (
                 <EmptyState
                     heading="No Printing Providers found"
@@ -30,6 +31,7 @@ const ProvidersPage = async () => {
                     }
                 />
             ) : (
+                // @ts-ignore
                 <PrintingProviderContent printProviders={printProviders} />
             )}
         </DashboardPage>

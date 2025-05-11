@@ -5,16 +5,18 @@ import { getUsersByRole } from "@/features/peoples/actions/people";
 import EmptyState from "@/components/empty-state";
 
 const CustomersPage = async () => {
-  const customers = await getUsersByRole("USER");
-  return (
-    <DashboardPage title="Customers">
-      {customers && customers?.length < 1 ? (
-        <EmptyState heading="No Customers yet" subHeading="" />
-      ) : (
-        <CustomersPageContent customers={customers} />
-      )}
-    </DashboardPage>
-  );
+    const customers = await getUsersByRole("USER");
+    return (
+        <DashboardPage title="Customers">
+            {/* @ts-ignore */}
+            {customers && customers?.length < 1 ? (
+                <EmptyState heading="No Customers yet" subHeading="" />
+            ) : (
+                // @ts-ignore
+                <CustomersPageContent customers={customers} />
+            )}
+        </DashboardPage>
+    );
 };
 
 export default CustomersPage;

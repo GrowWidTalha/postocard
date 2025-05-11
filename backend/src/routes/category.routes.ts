@@ -16,6 +16,9 @@ router.post("/subcategory", categoryController.createSubCategory);
 // Get subcategories by category ID
 router.get("/:id/subcategories", categoryController.getSubCategoriesById);
 
+// Get subcategories by category name
+router.get('/name/:categoryName/subcategories', categoryController.getSubCategoriesByCategoryNameController);
+
 // Delete category by ID (protected route)
 router.delete("/:categoryId", categoryController.deleteCategory);
 

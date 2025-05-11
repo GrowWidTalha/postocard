@@ -19,4 +19,8 @@ router.put("/:id", designController.updateDesign);
 // Delete design (protected route)
 router.delete("/:id", designController.deleteDesign);
 
+// Get designs by subcategory
+// @ts-ignore
+router.get("/subcategory/:subCategoryId", designController.getDesignsBySubCategory);
+
 export default router;

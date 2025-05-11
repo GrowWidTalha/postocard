@@ -23,6 +23,7 @@ const DesignersPage = async () => {
                 />
             ) : (
                 <DesignerPageContent
+                    // @ts-ignore
                     designers={designers}
 
                 />

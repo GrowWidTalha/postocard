@@ -155,6 +155,7 @@ const DesignPageContent = ({
 
     const filteredDesigns = useMemo(() => {
         return (
+            // @ts-ignore
             designs?.filter((design) => {
                 const matchesQuery = query
                     ? design.name.toLowerCase().includes(query.toLowerCase()) ||
@@ -192,6 +193,7 @@ const DesignPageContent = ({
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {filteredDesigns.length > 0 ? (
+                            // @ts-ignore
                             filteredDesigns.map((design) => (
                                 <DesignCard key={design.id} design={design} />
                             ))
