@@ -1,0 +1,16 @@
+# Build Stage
+FROM node:18 AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm install -g pnpm
+RUN pnpm install
+RUN pnpm dlx prisma generate
+COPY . .
+RUN pnpm run build
+
+# Production Stage
+FROM node:18-alpine
+WORKDIR /app
+COPY --from=builder /app ./
+EXPOSE 3003
+CMD ["pnpm", "run", "start", "--", "--port", "3003"]

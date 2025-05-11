@@ -1,0 +1,39 @@
+version: '3.8'
+services:
+  express-app:
+    build: ./backend
+    container_name: express-api
+    ports:
+      - "8000:8000"
+
+  app1:
+    build: ./admin
+    container_name: admin
+    ports:
+      - "3001:3001"
+    depends_on:
+      - express-app
+
+  app2:
+    build: ./designer
+    container_name: designer
+    ports:
+      - "3002:3002"
+    depends_on:
+      - express-app
+
+  app3:
+    build: ./home
+    container_name: home
+    ports:
+      - "3003:3003"
+    depends_on:
+      - express-app
+
+  app4:
+    build: ./printing_provider
+    container_name: printing_provider
+    ports:
+      - "3004:3004"
+    depends_on:
+      - express-app
