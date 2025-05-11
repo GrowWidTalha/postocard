@@ -5,8 +5,8 @@ COPY package*.json ./
 COPY pnpm-lock.yaml ./
 RUN npm install -g pnpm
 RUN pnpm install
-RUN pnpm dlx prisma generate
 COPY . .
+RUN pnpm dlx prisma generate
 RUN pnpm run build
 
 # Production Stage

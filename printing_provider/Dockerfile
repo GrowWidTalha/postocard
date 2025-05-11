@@ -4,8 +4,8 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install -g pnpm
 RUN pnpm install
-RUN pnpm dlx prisma generate
 COPY . .
+RUN pnpm dlx prisma generate
 RUN pnpm run build
 
 # Production Stage
