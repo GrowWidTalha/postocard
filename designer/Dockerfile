@@ -15,4 +15,4 @@ RUN npm install -g pnpm
 WORKDIR /app
 COPY --from=builder /app ./
 EXPOSE 3002
-CMD ["pnpm", "run", "start", "--", "-p", "3002"]
+CMD ["pnpm", "run", "start"]
