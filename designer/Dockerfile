@@ -11,6 +11,7 @@ RUN pnpm run build
 
 # Production Stage
 FROM node:18-alpine
+RUN npm install -g pnpm
 WORKDIR /app
 COPY --from=builder /app ./
 EXPOSE 3002
