@@ -15,11 +15,12 @@ const OrdersClient = ({ orders: initialOrders }: { orders: Order[] }) => {
     const [printStatus, setPrintStatus] = useState(() => searchParams.get("printStatus") || "")
     const [orderStatus, setOrderStatus] = useState(() => searchParams.get("orderStatus") || "")
     const [query, setQuery] = useState(() => searchParams.get("query") || "")
+    // @ts-ignore
     const { data: orders, isPending } = useQuery({
         queryKey: ["orders"],
         queryFn: async () => {
             const order = await getAllOrders();
-
+            // @ts-ignore
             return order;
         },
         // @ts-ignore
