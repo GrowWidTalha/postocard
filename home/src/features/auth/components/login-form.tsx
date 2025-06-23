@@ -1,8 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as z from "zod";
 import CardWrapper from "./card-wrapper";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -18,25 +18,38 @@ import { Button } from "@/components/ui/button";
 import FormError from "./form-error";
 import FormSuccess from "./form-success";
 import { useMutation } from "@tanstack/react-query";
-
 import Link from "next/link";
 import { login } from "../action/login";
 import { LoginSchema } from "../schemas";
+import { useSession } from "next-auth/react";
 
 const LoginForm = () => {
   const [showTwoFactor, setShowTwoFactor] = useState(false);
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const { data: session, status } = useSession();
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
+  
   const urlError =
     searchParams.get("error") === "OAuthAccountNotLinked"
       ? "Email Already in use with different provider."
       : "";
+
+  useEffect(() => {
+    if (status === "authenticated" && session) {
+      router.push(callbackUrl);
+    }
+  }, [status, session, callbackUrl, router]);
+
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
       email: "",
       password: "",
+      code: "",
     },
   });
+
   const { mutate, isPending, data } = useMutation({
     mutationFn: async (values: z.infer<typeof LoginSchema>) => {
       const data = await login(values);
@@ -55,13 +68,17 @@ const LoginForm = () => {
 
   const handleSubmit = async (values: z.infer<typeof LoginSchema>) => {
     mutate(values);
-
   };
+
+  if (status === "loading") {
+    return <div>Loading...</div>;
+  }
+
   return (
     <CardWrapper
       headerLabel="Welcome back"
       backButtonLabel="Don't have an account? Create one"
-      showSocial={true}
+      // showSocial={true}
       backButtonHref="/auth/register"
     >
       <Form {...form}>
@@ -137,8 +154,7 @@ const LoginForm = () => {
           <FormError message={data?.error || urlError} />
           <FormSuccess message={data?.success} />
           <Button className="w-full" type="submit" disabled={isPending}>
-
-            {showTwoFactor ? "Confirm": "Login"}
+            {showTwoFactor ? "Confirm" : "Login"}
           </Button>
         </form>
       </Form>

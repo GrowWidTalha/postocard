@@ -9,7 +9,7 @@ import {
 import { auth } from "./auth"
 
 const redirectRoutes = [
-  "/auth/register3j",
+  "/auth/register",
 ]
 // @ts-ignore
 export default auth((req) => {
