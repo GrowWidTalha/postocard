@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Posto Card | Admin",
-  description: "Posto Card",
+  title: "Posto Card | Designer Dashboard",
+  description: "Posto Card Designer Dashboard",
 };
 
 export default function RootLayout({
