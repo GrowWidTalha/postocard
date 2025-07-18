@@ -6,13 +6,13 @@ import React from "react";
 const Dashboard = () => {
 
     return redirect("/orders")
-//   return (
-//     <div>
-//       <DashboardPage title="Dashboard Page" hideBackButton>
-//         <Topcard />
-//       </DashboardPage>
-//     </div>
-//   );
+  return (
+    <div>
+      <DashboardPage title="Dashboard Page" hideBackButton>
+        <Topcard />
+      </DashboardPage>
+    </div>
+  );
 };
 
 export default Dashboard;

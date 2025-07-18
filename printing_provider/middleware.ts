@@ -7,7 +7,7 @@ import {
 import { auth } from "@/auth"
 
 const redirectRoutes = [
-  "/auth/register",
+  "/printing-provider/auth/register",
 ]
 // @ts-ignore
 export default auth((req) => {
@@ -31,10 +31,10 @@ export default auth((req) => {
     return null
   }
   if (!isLoggedIn && !isPublicRoute) {
-    return Response.redirect(new URL("/auth/login", nextUrl))
+    return Response.redirect(new URL("/printing-provider/auth/login", nextUrl))
   }
   if (isRedirectRoute) {
-    return Response.redirect(new URL("/", nextUrl))
+    return Response.redirect(new URL("/printing-provider/", nextUrl))
   }
 
   return null

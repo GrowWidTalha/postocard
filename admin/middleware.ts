@@ -33,10 +33,10 @@ export default auth((req) => {
     return null
   }
   if (!isLoggedIn && !isPublicRoute) {
-    return Response.redirect(new URL("/auth/login", nextUrl))
+    return Response.redirect(new URL("/admin/auth/login", nextUrl))
   }
   if (isRedirectRoute) {
-    return Response.redirect(new URL("/", nextUrl))
+    return Response.redirect(new URL("/admin/", nextUrl))
   }
 
   return null
@@ -45,8 +45,8 @@ export default auth((req) => {
 export const config = {
   matcher: [
     // Skip Next.js internals and all static files, unless found in search params
-    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+    "/admin/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
     // Always run for API routes
-    "/(api|trpc)(.*)",
+    "/admin/(api|trpc)(.*)",
   ],
 }

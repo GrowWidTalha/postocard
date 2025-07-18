@@ -7,8 +7,8 @@
  * @type {string[]}
  */
 export const publicRoutes = [
-    "/auth/new-verification",
-    "/api/hono"
+    "/admin/auth/new-verification",
+    "/admin/api/hono"
 ]
 
 /**
@@ -16,11 +16,11 @@ export const publicRoutes = [
  * @type {string[]}
 */
 export const authRoutes = [
-    "/auth/login",
-    "/auth/register",
-    "/auth/reset",
-    "/auth/error",
-    "/auth/new-password",
+    "/admin/auth/login",
+    "/admin/auth/register",
+    "/admin/auth/reset",
+    "/admin/auth/error",
+    "/admin/auth/new-password",
 
 ]
 
@@ -28,5 +28,5 @@ export const authRoutes = [
  * The prefix for API authentication routes.
  * @type {string}
  */
-export const apiAuthPrefix = "/api"
-export const DEFAULT_LOGIN_REDIRECT="/"
+export const apiAuthPrefix = "/admin/api"
+export const DEFAULT_LOGIN_REDIRECT="/admin/"

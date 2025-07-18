@@ -5,8 +5,8 @@ import { db } from "@/db";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
     pages: {
-        signIn: "/auth/login",
-        error: "/auth/error",
+        signIn: "/admin/auth/login",
+        error: "/admin/auth/error",
     },
     adapter: PrismaAdapter(db),
     events: {

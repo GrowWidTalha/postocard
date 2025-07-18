@@ -9,8 +9,8 @@ import { getAccountByUserId } from "@/features/auth/data/account";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
-    signIn: "/auth/login",
-    error: "/auth/error",
+    signIn: "/designer/auth/login",
+    error: "/designer/auth/error",
     // verifyRequest: "/auth/verify-request"
   },
   adapter: PrismaAdapter(db),
