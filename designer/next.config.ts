@@ -3,6 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   basePath: "/designer",
   assetPrefix: "/designer",
+  trailingSlash: true,
   images: {
     remotePatterns: [
       {

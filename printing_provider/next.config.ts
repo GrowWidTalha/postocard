@@ -3,6 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   basePath: "/printing-provider",
   assetPrefix: "/printing-provider",
+  trailingSlash: true,
   images: {
     remotePatterns: [
       {
