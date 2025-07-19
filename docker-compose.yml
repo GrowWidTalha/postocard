@@ -37,3 +37,20 @@ services:
       - "3004:3004"
     depends_on:
       - backend
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password --bind-address=0.0.0.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword   # Change this to a strong password!
+      MYSQL_DATABASE: postocard          # Default database name
+      MYSQL_USER: postocard_user         # Custom user
+      MYSQL_PASSWORD: postocard_pass     # Custom user password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
