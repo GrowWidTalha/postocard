@@ -4,6 +4,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { db } from "@/db";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+    basePath: "/admin/api/auth", 
     pages: {
         signIn: "/admin/auth/login",
         error: "/admin/auth/error",
