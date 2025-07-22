@@ -4,6 +4,7 @@ import { LoginSchema } from "@/features/auth/schemas";
 
 
 export default {
+  basePath: "/admin/api/auth",
   providers: [
     Credentials({
       async authorize(credentials) {

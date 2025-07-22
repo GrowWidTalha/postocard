@@ -5,7 +5,7 @@ import { PropsWithChildren } from "react";
 
 const LogoutButton = ({ children }: PropsWithChildren) => {
   const onClick = async () => {
-    await signOut();
+    await signOut({}    );
   };
   return <span  onClick={onClick} className="cursor-pointer">
     {children}
