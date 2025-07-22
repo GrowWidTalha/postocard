@@ -96,7 +96,7 @@
 
 import * as z from "zod";
 import { LoginSchema } from "@/features/auth/schemas";
-import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
+import { DEFAULT_LOGIN_REDIRECT } from "../../../../routes";
 
 export const login = async (values: z.infer<typeof LoginSchema>) => {
   try {
