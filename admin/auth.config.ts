@@ -1,10 +1,9 @@
 import { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { LoginSchema } from "@/features/auth/schemas";
+// import { LoginSchema } from "@/features/auth/schemas";
 
 
 export default {
-  basePath: "/admin/api/auth",
   providers: [
     Credentials({
       async authorize(credentials) {
